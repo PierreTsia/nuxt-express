@@ -5,16 +5,14 @@
       :clipped="clipped"
       v-model="drawer"
       fixed
-      app
-    >
+      app>
       <v-list>
         <v-list-tile
           v-for="(item, i) in items"
           :to="item.to"
           :key="i"
           router
-          exact
-        >
+          exact>
           <v-list-tile-action>
             <v-icon v-html="item.icon" />
           </v-list-tile-action>
@@ -27,8 +25,7 @@
     <v-toolbar
       :clipped-left="clipped"
       fixed
-      app
-    >
+      app>
       <v-toolbar-side-icon @click="drawer = !drawer" />
       <v-btn
         icon
