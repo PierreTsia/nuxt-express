@@ -79,3 +79,6 @@ dist
 
 # IDE
 .idea
+
+#keys
+/config/keys_dev.js
