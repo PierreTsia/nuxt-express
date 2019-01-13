@@ -1,10 +1,43 @@
 
 const express = require('express')
 const consola = require('consola')
+// custom imports
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const passport = require("passport");
+
+
 const { Nuxt, Builder } = require('nuxt')
 const app = express()
+
+//BodyParser Middleware
+app.use(
+  bodyParser.urlencoded({
+    extended: false,
+  }),
+);
+
+app.use(bodyParser.json());
+
+//DB config
+
+const db = require("../config/keys").mongoURI;
+
+//Mongoose connect
+
+mongoose
+  .connect(
+    db,
+    { useNewUrlParser: true },
+  )
+  .then(() => console.log("MongoDB connected"))
+  .catch(error => console.log(error));
+
+
 const host = process.env.HOST || '127.0.0.1'
 const port = process.env.PORT || 3000
+
+
 
 app.set('port', port)
 
