@@ -1,5 +1,11 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
+
+
+#keys
+config/keys_dev.js 
+
+
 # Logs
 logs
 *.log
@@ -80,5 +86,3 @@ dist
 # IDE
 .idea
 
-#keys
-config/keys_dev.js
