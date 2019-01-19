@@ -47,7 +47,7 @@ app.use(passport.initialize({}));
 
 //Routes
 
-app.get('/api', (req, res) => res.send({ message: "Hello World" }))
+app.get('/api', (req, res) => res.send({ message: "🖖 Hello World 🖖" }))
 app.use("/api/users", users);
 
 
