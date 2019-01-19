@@ -1,13 +1,18 @@
 
+// imports
 const express = require('express')
 const consola = require('consola')
-// custom imports
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const passport = require("passport");
-
-
 const { Nuxt, Builder } = require('nuxt')
+
+const users = require("./routes/api/users");
+
+
+
+
+//Express App
 const app = express()
 
 //BodyParser Middleware
@@ -19,27 +24,39 @@ app.use(
 
 app.use(bodyParser.json());
 
-//DB config
+
+//DB & Mongoose
 
 const db = require("../config/keys").mongoURI;
-
-//Mongoose connect
 
 mongoose
   .connect(
     db,
     { useNewUrlParser: true },
   )
-  .then(() => console.log("MongoDB connected"))
+  .then(() => console.log(" 💾 Database connected"))
   .catch(error => console.log(error));
 
 
+//Passport Middleware
+app.use(passport.initialize({}));
+
+// Passport Config
+// require("../config/passport")(passport);
+
+
+//Routes
+
+app.get('/api', (req, res) => res.send({ message: "Hello World" }))
+app.use("/api/users", users);
+
+
+//Port
 const host = process.env.HOST || '127.0.0.1'
 const port = process.env.PORT || 3000
-
-
-
 app.set('port', port)
+
+
 
 // Import and Set Nuxt.js options
 let config = require('../nuxt.config.js')
@@ -61,7 +78,7 @@ async function start() {
   // Listen the server
   app.listen(port, host)
   consola.ready({
-    message: `Server listening on http://${host}:${port}`,
+    message: `🚀 Server listening on http://${host}:${port}`,
     badge: true
   })
 }
