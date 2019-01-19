@@ -119,6 +119,27 @@ router.post("/login", (req, res) => {
   });
 });
 
+/* 
+// ? @route GET to api/users/current
+// ? @description Return Current User
+// ! @access      Private
 
+router.get("/current", (req, res, next) => {
+  passport.authenticate("jwt", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.json({ message: info.message });
+    }
+    res.json({
+      msg: "Auth success 👌",
+      user: user.name,
+      id: user.id,
+      email: user.email,
+    });
+  })(req, res, next);
+});
+ */
 
 module.exports = router
