@@ -1,0 +1,83 @@
+<template>
+  <v-layout>
+    <v-flex
+      offset-sm3
+      sm6 
+      text-xs-center 
+      xs12>
+
+      <v-container>
+        <img
+          src="/v.png"
+          alt="Vuetify.js"
+          class="mb-5">
+        <form>
+          <v-text-field
+            v-model="email"
+            label="Email"
+            required/>
+
+          <v-text-field
+            v-model="password"
+            label="Password"
+            required
+            type="password"
+          />
+
+
+          <v-btn @click="handleLoginClick">submit</v-btn>
+          <v-btn @click="handleClearClick">clear</v-btn>
+        </form>
+      </v-container>
+    </v-flex>
+  </v-layout>
+</template>
+<script>
+  import axios from '~/plugins/axios'
+
+  import {mapActions, mapGetters} from 'vuex'
+  export default {
+    data(){
+      return {
+        email:'',
+        password:'',
+      }
+
+    },
+    computed:{
+      ...mapGetters(['token'])
+    },
+
+    methods:{
+      ...mapActions(['login', 'getCurrentUser']),
+      handleLoginClick(){
+        const user = {
+          email: this.email,
+          password: this.password
+        }
+
+        this.login(user)
+      },
+      handleClearClick: function () {
+
+        this.getCurrentUser()
+      }
+       /* console.log('clear')
+
+        let config = {
+          headers: {
+            Authorization: this.token,
+          }
+        };
+          this.$axios.get('/api/users/current', config)
+              .then(res => {
+                console.log(res.data)
+              })
+              .catch(e => {
+                console.log(e.response)
+              })
+
+        }*/
+      }
+    }
+</script>

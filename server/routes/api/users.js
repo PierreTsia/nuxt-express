@@ -2,6 +2,9 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const gravatar = require("gravatar");
 const jwt = require("jsonwebtoken");
+const passport = require ("passport")
+const myPassportService = require('../../passport')(passport);
+
 
 const router = express.Router();
 
@@ -119,12 +122,13 @@ router.post("/login", (req, res) => {
   });
 });
 
-/* 
+
 // ? @route GET to api/users/current
 // ? @description Return Current User
 // ! @access      Private
 
 router.get("/current", (req, res, next) => {
+  console.log(req.headers)
   passport.authenticate("jwt", (err, user, info) => {
     if (err) {
       return next(err);
@@ -140,6 +144,6 @@ router.get("/current", (req, res, next) => {
     });
   })(req, res, next);
 });
- */
+
 
 module.exports = router
