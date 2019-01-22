@@ -128,7 +128,6 @@ router.post("/login", (req, res) => {
 // ! @access      Private
 
 router.get("/current", (req, res, next) => {
-  console.log(req.headers)
   passport.authenticate("jwt", (err, user, info) => {
     if (err) {
       return next(err);

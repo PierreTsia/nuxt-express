@@ -35,7 +35,7 @@ export default{
           Authorization: getters.token
         }
       }
-      const resp = await this.$axios.get(`${END_POINT}/current`, config)
+      const resp = await axios.get(`${END_POINT}/current`, config)
       const user = resp.data
       commit('setUser', user)
     }
