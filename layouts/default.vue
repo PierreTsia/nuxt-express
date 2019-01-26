@@ -23,15 +23,18 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar
+      ref="toolbar"
       :clipped-left="clipped"
-      fixed
-      app>
+      app
+      fixed>
       <v-toolbar-side-icon @click="drawer = !drawer" />
 
       <v-toolbar-title v-text="title"/>
     </v-toolbar>
     <v-content>
-      <v-container>
+      <v-container 
+        align-content-center
+        fill-height>
         <nuxt />
       </v-container>
     </v-content>
@@ -73,8 +76,12 @@
         miniVariant: false,
         right: true,
         rightDrawer: false,
-        title: 'Vuetify.js'
+        title: 'Vuetify.js',
       }
-    }
+    },
+
   }
 </script>
+<style lang="stylus">
+
+</style>
