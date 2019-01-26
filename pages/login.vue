@@ -26,7 +26,7 @@
 
 
           <v-btn @click="handleLoginClick">submit</v-btn>
-          <v-btn @click="handleClearClick">clear</v-btn>
+          <v-btn >clear</v-btn>
         </form>
       </v-container>
     </v-flex>
@@ -53,6 +53,7 @@ export default {
   },
   watch: {
     isAuth: {
+      immediate: true,
       handler(user){
         if(user) this.$router.push('/')
       }
