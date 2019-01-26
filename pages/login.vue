@@ -68,25 +68,6 @@ export default {
 
       this.login(user);
     },
-    handleClearClick: function() {
-      this.getCurrentUser();
-    }
-    /* console.log('clear')
-
-        let config = {
-          headers: {
-            Authorization: this.token,
-          }
-        };
-          this.$axios.get('/api/users/current', config)
-              .then(res => {
-                console.log(res.data)
-              })
-              .catch(e => {
-                console.log(e.response)
-              })
-
-        }*/
   }
 };
 </script>

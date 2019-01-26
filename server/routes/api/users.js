@@ -106,7 +106,6 @@ app.post('/api/logout', function (req, res) {
 
 
 router.post("/login", (req, res) => {
-  console.log(req)
   const email = req.body.email;
   const password = req.body.password;
 
