@@ -45,7 +45,7 @@
             color="primary"
             flat
             nuxt
-            to="/inspire">Continue</v-btn>
+            @click="handleLogout">Continue</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -53,13 +53,35 @@
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
+import Logo from "~/components/Logo.vue";
+import VuetifyLogo from "~/components/VuetifyLogo.vue";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
+  fetch({ store, redirect }) {
+    if (!store.state.auth.user) {
+      return redirect("/login");
+    }
+  },
   components: {
     Logo,
     VuetifyLogo
+  },
+  computed: {
+    ...mapGetters(["isAuth"])
+  },
+  watch :{
+    isAuth: {
+      handler(auth){
+        if(!auth)this.$router.push('/login')
+      }
+    }
+  },
+  methods: {
+    ...mapActions(["logout"]),
+    handleLogout() {
+      this.logout();
+    }
   }
-}
+};
 </script>

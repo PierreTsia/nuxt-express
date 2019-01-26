@@ -82,7 +82,31 @@ router.post("/register", (req, res) => {
 // ? @description login user : returning JWT token
 // ! @ access Public
 
+
+/*
+// POST `/api/login` to log in the user and add him to the `req.session.authUser`
+app.post('/api/login', function (req, res) {
+  if (req.body.username === 'demo' && req.body.password === 'demo') {
+
+    return res.json({ username: 'demo' })
+  }
+  res.status(401).json({ error: 'Bad credentials' })
+})
+
+// POST `/api/logout` to log out the user and remove it from the `req.session`
+app.post('/api/logout', function (req, res) {
+  delete req.session.authUser
+  res.json({ ok: true })
+})
+*/
+
+
+
+
+
+
 router.post("/login", (req, res) => {
+  console.log(req)
   const email = req.body.email;
   const password = req.body.password;
 
@@ -100,7 +124,7 @@ router.post("/login", (req, res) => {
     bcrypt.compare(password, user.password).then(isMatch => {
       if (isMatch) {
         //User match
-        const payload = { id: user.id, name: user.name, avatar: user.avatar };
+        const payload = { id: user.id, name: user.name, avatar: user.avatar, email: user.email };
 
         //Sign token
         jwt.sign(
@@ -110,7 +134,8 @@ router.post("/login", (req, res) => {
           (err, token) => {
             res.json({
               success: true,
-              token: `Bearer ${token}`,
+              accessToken: token,
+              user: payload,
             });
           },
         );
@@ -121,6 +146,10 @@ router.post("/login", (req, res) => {
     });
   });
 });
+
+router.post('/logout',  (req, res) =>{
+  res.json({ success: true })
+})
 
 
 // ? @route GET to api/users/current

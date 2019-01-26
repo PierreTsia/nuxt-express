@@ -14,21 +14,24 @@
     "heroku-postbuild": "npm run build"
   },
   "dependencies": {
-    "@nuxtjs/auth": "^4.5.3",
     "@nuxtjs/axios": "^5.3.6",
     "bcrypt": "^3.0.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
+    "cookieparser": "^0.1.0",
     "cookies": "^0.7.3",
     "cross-env": "^5.2.0",
     "express": "^4.16.3",
+    "express-session": "^1.15.6",
     "gravatar": "^1.8.0",
+    "js-cookie": "^2.2.0",
     "mongoose": "^5.4.3",
     "nuxt": "^2.0.0",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "validator": "^10.11.0",
-    "vuetify": "^1.2.4"
+    "vuetify": "^1.2.4",
+    "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.11.0",

@@ -26,7 +26,6 @@ app.use(bodyParser.json());
 
 
 
-
 //DB & Mongoose
 
 const db = require("../config/keys").mongoURI;
@@ -43,8 +42,6 @@ mongoose
 //Passport Middleware
 app.use(passport.initialize({}));
 
-// Passport Config
-// require("../config/passport")(passport);
 
 
 //Routes
