@@ -12,12 +12,14 @@
       v-if="!isLoading"
       class="login__tabs__container">
       <v-tabs
+        v-model="active_tab"
         centered
         color="transparent"
         icons-and-text
         light>
         <v-tabs-slider color="secondary"/>
         <v-tab
+          key="login"
           class="tab"
           light
           href="#login">
@@ -26,6 +28,8 @@
           <v-icon>fingerprint</v-icon>
         </v-tab>
         <v-tab
+          key="register"
+          class="tab"
           light
           href="#register">
           <span class="primary--text">Sign-up</span>
@@ -69,7 +73,7 @@ export default {
   },
   data() {
     return {
-      model: "tab-1"
+      active_tab: "register"
     };
   },
   computed: {
