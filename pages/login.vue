@@ -1,51 +1,59 @@
 <template>
-  <v-layout>
-    <v-flex
-      text-xs-center
-      align-content-center
-      xs12
-      sm8
-      offset-sm2>
-      <v-container
-        class="login_container"
-        fill-height
-        xs12>
-        <v-progress-circular
-          v-if="isLoading"
-          :size="90"
-          :width="7"
-          class="login__loader"
-          color="light"
-          indeterminate/>
-        <v-form
-          v-if="!isLoading"
-          class="login__form">
-          <v-text-field
-            v-model="email"
-            :error-messages="emailError"
-            class="login_textField"
-            xs12
-            label="Email"
-            required/>
+  <v-layout
+    class="login">
+    <v-progress-circular
+      v-if="isLoading"
+      :size="90"
+      :width="7"
+      class="login__loader"
+      color="secondary"
+      indeterminate/>
+    <div
+      v-if="!isLoading"
+      class="login__tabs__container">
+      <v-tabs
+        centered
+        color="transparent"
+        icons-and-text
+        light>
+        <v-tabs-slider color="secondary"/>
+        <v-tab
+          class="tab"
+          light
+          href="#login">
+          <span class="primary--text">Login</span>
 
-          <v-text-field
-            v-model="password"
-            :error-messages="passwordError"
-            class="login_textField"
-            xs12
-            label="Password"
-            required
-            type="password"/>
-          <v-btn @click="handleLoginClick">submit</v-btn>
-          <v-btn >clear</v-btn>
-        </v-form>
-      </v-container>
-    </v-flex>
+          <v-icon>fingerprint</v-icon>
+        </v-tab>
+        <v-tab
+          light
+          href="#register">
+          <span class="primary--text">Sign-up</span>
+          <v-icon>person_add</v-icon>
+        </v-tab>
+        <v-tab-item
+          value="login">
+          <LoginForm
+            v-if="!isLoading"
+            :errors="loginErrors"
+            class="loginForm"
+            @userLogin="handleLoginRequest"/>
+        </v-tab-item>
+        <v-tab-item
+          value="register">
+
+          <LoginForm
+            v-if="!isLoading"
+            :errors="loginErrors"
+            class="loginForm"
+            @userLogin="handleLoginRequest"/>
+        </v-tab-item>
+      </v-tabs>
+    </div>
   </v-layout>
 </template>
 <script>
-import axios from "~/plugins/axios";
-
+import LoginForm from "@/components/LoginForm.vue";
 import { mapActions, mapGetters } from "vuex";
 export default {
   fetch({ store, redirect }) {
@@ -53,24 +61,21 @@ export default {
       return redirect("/");
     }
   },
+  components: {
+    LoginForm
+  },
   data() {
     return {
-      email: "",
-      password: ""
+      model: "tab-1"
     };
   },
   computed: {
     ...mapGetters({
-      errors: "authErrors",
+      loginErrors: "loginErrors",
+      registerErrors: "registerErrors",
       isAuth: "isAuth",
       isLoading: "isLoading"
-    }),
-    emailError() {
-      return this.errors.email || null;
-    },
-    passwordError() {
-      return this.errors.password || null;
-    }
+    })
   },
   watch: {
     isAuth: {
@@ -81,27 +86,32 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["login", "getCurrentUser"]),
-    handleLoginClick() {
-      const user = {
-        email: this.email,
-        password: this.password
-      };
-
+    ...mapActions(["login"]),
+    handleLoginRequest(user) {
       this.login(user);
     }
   }
 };
 </script>
+
+
 <style lang="stylus">
-  .login_container
+  .login
+    display flex
+    flex-direction column
+    justify-content center
+    .loginForm
+        max-width 600px
+        margin auto
     .login__loader
       margin auto
-    .login__form
-      width 100%
-      height 33vh
-      .login_textField
-        margin 20px
+    .tab
+      display flex
+
+
+
+
+
 
 
 </style>

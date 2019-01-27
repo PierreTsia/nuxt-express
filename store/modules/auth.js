@@ -6,12 +6,14 @@ export default {
   state: {
     user: null,
     token: null,
-    errors: {},
+    loginErrors: {},
+    registerErrors:{},
     isLoading: false
   },
   getters: {
     isAuth: state => !!state.user,
-    authErrors: state => state.errors,
+    loginErrors: state => state.loginErrors,
+    registerErrors: state => registerErrors,
     isLoading: state => state.isLoading
   },
   actions: {
@@ -28,24 +30,22 @@ export default {
         })
         .catch(e => {
           const error = e.response.data;
-          console.log(e.response);
-          commit("setError", error);
+          commit("setLoginError", error);
           commit("setLoading", false);
         });
     },
     logout({ commit }) {
-      commit("setLoading", true)
+      commit("setLoading", true);
       axios
         .post(`${END_POINT}/logout`)
         .then(({ data }) => {
           Cookie.remove("auth");
           commit("setUser", false);
-          commit("setLoading", false)
-
+          commit("setLoading", false);
         })
-        .catch(e =>  {
-          commit("setLoading", false)
-          console.log(e)
+        .catch(e => {
+          commit("setLoading", false);
+          console.log(e);
         });
     }
   },
@@ -53,8 +53,11 @@ export default {
     setUser(state, user) {
       state.user = user;
     },
-    setError(state, errors) {
-      state.errors = errors;
+    setLoginError(state, errors) {
+      state.loginErrors = errors;
+    },
+    setRegisterError(state, errors) {
+      state.registerErrors = errors;
     },
     setLoading(state, isLoading) {
       state.isLoading = isLoading;
