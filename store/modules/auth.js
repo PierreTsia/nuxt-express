@@ -53,7 +53,9 @@ export default {
       axios
         .post(`${END_POINT}/register`, newUserData)
         .then(({data}) => {
-          const {user} = data
+          const { user, accessToken } = data;
+          const auth = { accessToken };
+          Cookie.set("auth", auth);
           commit('setUser', user)
           commit('setLoading', false)
         })

@@ -63,9 +63,23 @@ router.post("/register", (req, res) => {
           newUser
             .save()
             .then(savedUser => {
+              //Sign token
+;
               const { id, name, email, avatar } = savedUser;
               const user = { id, name, email, avatar };
-              res.status(200).json({ success: true, user });
+
+              jwt.sign(
+                user,
+                keys.secretOrKey,
+                { expiresIn: 3600 },
+                (err, token) => {
+                  res.json({
+                    success: true,
+                    accessToken: token,
+                    user
+                  });
+                },
+              )
             })
             .catch(err => console.log(err));
         });
