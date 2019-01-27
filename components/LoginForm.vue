@@ -17,13 +17,13 @@
       label="Password"
       required
       type="password"/>
-    <v-layout 
-      row 
+    <v-layout
+      row
       justify-center>
       <v-btn
         color="secondary"
         @click="handleLoginClick">submit</v-btn>
-      <v-btn >clear</v-btn>
+      <v-btn @click="handleClear">clear</v-btn>
 
     </v-layout>
 
@@ -32,6 +32,7 @@
 
 </template>
 <script>
+import {mapMutations} from 'vuex';
 export default {
   name: "LoginForm",
   props: {
@@ -55,6 +56,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setLoginError']),
     handleLoginClick() {
       const user = {
         email: this.email,
@@ -62,6 +64,11 @@ export default {
       };
 
       this.$emit("userLogin", user);
+    },
+    handleClear(){
+      this.email="";
+      this.password="";
+      this.setLoginError({})
     }
   }
 };

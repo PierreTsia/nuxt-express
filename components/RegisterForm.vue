@@ -39,7 +39,7 @@
       <v-btn
         color="secondary"
         @click="handleRegisterClick">submit</v-btn>
-      <v-btn >clear</v-btn>
+      <v-btn @click="handleClear">clear</v-btn>
 
     </v-layout>
 
@@ -48,6 +48,7 @@
 
 </template>
 <script>
+import { mapMutations } from "vuex";
 export default {
   name: "RegisterForm",
   props: {
@@ -65,7 +66,7 @@ export default {
     };
   },
   computed: {
-    nameError(){
+    nameError() {
       return this.errors.name || null;
     },
     emailError() {
@@ -79,6 +80,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setRegisterError']),
     handleRegisterClick() {
       const user = {
         name: this.name,
@@ -88,6 +90,13 @@ export default {
       };
 
       this.$emit("userRegister", user);
+    },
+    handleClear() {
+      this.name = ""
+      this.password = "";
+      this.password2 = "";
+      this.email = "";
+      this.setRegisterError({})
     }
   }
 };
