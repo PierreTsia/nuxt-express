@@ -44,7 +44,7 @@
 
           <RegisterForm
             v-if="!isLoading"
-            :errors="loginErrors"
+            :errors="registerErrors"
             class="loginForm"
             @userRegister="handleRegisterRequest"/>
         </v-tab-item>

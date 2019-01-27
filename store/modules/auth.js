@@ -13,8 +13,8 @@ export default {
   getters: {
     isAuth: state => !!state.user,
     loginErrors: state => state.loginErrors,
-    registerErrors: state => registerErrors,
-    isLoading: state => state.isLoading
+    isLoading: state => state.isLoading,
+    registerErrors: state => state.registerErrors
   },
   actions: {
     login({ commit }, payload) {
@@ -59,6 +59,8 @@ export default {
         })
         .catch(e => {
           console.log(e)
+          const err = e.response.data
+          commit('setRegisterError', err)
           commit('setLoading', false)
         })
     }
