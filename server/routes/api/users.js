@@ -2,12 +2,10 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const gravatar = require("gravatar");
 const jwt = require("jsonwebtoken");
-const passport = require ("passport")
-const myPassportService = require('../../passport')(passport);
-
+const passport = require("passport");
+const myPassportService = require("../../passport")(passport);
 
 const router = express.Router();
-
 
 //* config
 const keys = require("./../../../config/keys");
@@ -19,20 +17,15 @@ const User = require("../../../models/User");
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 
-
-
-
-
 //**ROUTES
-
 
 // ? @route GET to api/users/test
 // ? @description Test users route
 // ! @ access Public
 
-
-router.get("/test", (req, res) => res.json({ message: "api/users route works fine 🖖" }));
-
+router.get("/test", (req, res) =>
+  res.json({ message: "api/users route works fine 🖖" })
+);
 
 // ? @route GET to api/users/register
 // ? @description Register New User
@@ -53,14 +46,14 @@ router.post("/register", (req, res) => {
       const avatar = gravatar.url(req.body.email, {
         s: "200", // Size
         r: "pg", // Rating
-        d: "mm", // Default
+        d: "mm" // Default
       });
 
       const newUser = new User({
         name: req.body.name,
         email: req.body.email,
         avatar,
-        password: req.body.password,
+        password: req.body.password
       });
 
       bcrypt.genSalt(10, (err, salt) => {
@@ -69,19 +62,21 @@ router.post("/register", (req, res) => {
           newUser.password = hash;
           newUser
             .save()
-            .then(user => res.status(200).json({ success: true, user }))
-            .catch(err => console.log(err))
+            .then(savedUser => {
+              const { id, name, email, avatar } = savedUser;
+              const user = { id, name, email, avatar };
+              res.status(200).json({ success: true, user });
+            })
+            .catch(err => console.log(err));
         });
       });
     }
   });
 });
 
-
 // ? @route GET to api/users/login
 // ? @description login user : returning JWT token
 // ! @ access Public
-
 
 /*
 // POST `/api/login` to log in the user and add him to the `req.session.authUser`
@@ -99,11 +94,6 @@ app.post('/api/logout', function (req, res) {
   res.json({ ok: true })
 })
 */
-
-
-
-
-
 
 router.post("/login", (req, res) => {
   const email = req.body.email;
@@ -123,7 +113,12 @@ router.post("/login", (req, res) => {
     bcrypt.compare(password, user.password).then(isMatch => {
       if (isMatch) {
         //User match
-        const payload = { id: user.id, name: user.name, avatar: user.avatar, email: user.email };
+        const payload = {
+          id: user.id,
+          name: user.name,
+          avatar: user.avatar,
+          email: user.email
+        };
 
         //Sign token
         jwt.sign(
@@ -134,9 +129,9 @@ router.post("/login", (req, res) => {
             res.json({
               success: true,
               accessToken: token,
-              user: payload,
+              user: payload
             });
-          },
+          }
         );
       } else {
         errors.password = "Incorrect Password";
@@ -146,10 +141,9 @@ router.post("/login", (req, res) => {
   });
 });
 
-router.post('/logout',  (req, res) =>{
-  res.json({ success: true })
-})
-
+router.post("/logout", (req, res) => {
+  res.json({ success: true });
+});
 
 // ? @route GET to api/users/current
 // ? @description Return Current User
@@ -167,10 +161,9 @@ router.get("/current", (req, res, next) => {
       msg: "Auth success 👌",
       user: user.name,
       id: user.id,
-      email: user.email,
+      email: user.email
     });
   })(req, res, next);
 });
 
-
-module.exports = router
+module.exports = router;

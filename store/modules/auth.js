@@ -47,6 +47,20 @@ export default {
           commit("setLoading", false);
           console.log(e);
         });
+    },
+    registerNewUser({commit}, newUserData){
+      commit('setLoading', true)
+      axios
+        .post(`${END_POINT}/register`, newUserData)
+        .then(({data}) => {
+          const {user} = data
+          commit('setUser', user)
+          commit('setLoading', false)
+        })
+        .catch(e => {
+          console.log(e)
+          commit('setLoading', false)
+        })
     }
   },
   mutations: {

@@ -1,68 +1,73 @@
 <template>
-  <v-flex
-    text-xs-center
-    align-content-center
-    xs12
-    sm8
-    offset-sm2>
-    <v-container
-      class="login_container"
-      fill-height
-      xs12>
-      <v-progress-circular
-        v-if="isLoading"
-        :size="90"
-        :width="7"
-        class="login__loader"
-        color="light"
-        indeterminate/>
-      <v-form
-        v-if="!isLoading"
-        class="login__form">
-        <v-text-field
-          v-model="email"
-          :error-messages="emailError"
-          class="login_textField"
-          xs12
-          label="Email"
-          required/>
+  <div class="register_form container">
+    <v-text-field
+      v-model="name"
+      :error-messages="nameError"
+      prepend-icon="person"
+      class="register_textField"
+      label="Name"
+      required/>
+    <v-text-field
+      v-model="email"
+      :error-messages="emailError"
+      prepend-icon="alternate_email"
+      class="register_textField"
+      label="Email"
+      required/>
 
-        <v-text-field
-          v-model="password"
-          :error-messages="passwordError"
-          class="login_textField"
-          xs12
-          label="Password"
-          required
-          type="password"/>
+    <v-text-field
+      v-model="password"
+      :error-messages="passwordError"
+      prepend-icon="lock_open"
+      class="register_textField"
+      xs12
+      label="Password"
+      required
+      type="password"/>
+    <v-text-field
+      v-model="password2"
+      :error-messages="password2Error"
+      prepend-icon="lock_open"
+      class="register_textField"
+      xs12
+      label="Confirm password"
+      required
+      type="password"/>
+    <v-layout
+      row
+      justify-center>
+      <v-btn
+        color="secondary"
+        @click="handleRegisterClick">submit</v-btn>
+      <v-btn >clear</v-btn>
 
-        <v-text-field
-          v-model="password2"
-          :error-messages="password2Error"
-          class="login_textField"
-          xs12
-          label="Confirm password"
-          required
-          type="password"/>
-        <v-btn @click="handleRegisterClick">submit</v-btn>
-        <v-btn >clear</v-btn>
-      </v-form>
-    </v-container>
-  </v-flex>
+    </v-layout>
+
+
+  </div>
+
 </template>
 <script>
-import { mapGetters, mapActions } from "vuex";
 export default {
   name: "RegisterForm",
+  props: {
+    errors: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
-      email:"",
+      name: "",
+      email: "",
       password: "",
-      password2:""
+      password2: ""
     };
   },
   computed: {
-    ...mapGetters({ errors: "authErrors", isLoading: "isLoading" }),
+    nameError(){
+      return this.errors.name || null;
+    },
     emailError() {
       return this.errors.email || null;
     },
@@ -72,18 +77,24 @@ export default {
     password2Error() {
       return this.errors.password2 || null;
     }
-
   },
-  methods:{
-    handleLoginClick() {
+  methods: {
+    handleRegisterClick() {
       const user = {
+        name: this.name,
         email: this.email,
-        password: this.password
+        password: this.password,
+        password2: this.password2
       };
 
-      this.$emit('userLogin',user);
+      this.$emit("userRegister", user);
     }
   }
-
 };
 </script>
+<style lang="stylus" scoped>
+  .register_form
+    width 100%
+    .register_textField
+      margin-bottom 20px
+</style>

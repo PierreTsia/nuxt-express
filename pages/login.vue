@@ -37,16 +37,16 @@
             v-if="!isLoading"
             :errors="loginErrors"
             class="loginForm"
-            @userLogin="handleLoginRequest"/>
+            @userLogin="handleLoginRequest" />
         </v-tab-item>
         <v-tab-item
           value="register">
 
-          <LoginForm
+          <RegisterForm
             v-if="!isLoading"
             :errors="loginErrors"
             class="loginForm"
-            @userLogin="handleLoginRequest"/>
+            @userRegister="handleRegisterRequest"/>
         </v-tab-item>
       </v-tabs>
     </div>
@@ -54,6 +54,8 @@
 </template>
 <script>
 import LoginForm from "@/components/LoginForm.vue";
+import RegisterForm from "@/components/RegisterForm.vue";
+
 import { mapActions, mapGetters } from "vuex";
 export default {
   fetch({ store, redirect }) {
@@ -62,7 +64,8 @@ export default {
     }
   },
   components: {
-    LoginForm
+    LoginForm,
+    RegisterForm
   },
   data() {
     return {
@@ -86,9 +89,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["login"]),
+    ...mapActions(["login", "registerNewUser"]),
     handleLoginRequest(user) {
       this.login(user);
+    },
+    handleRegisterRequest(newUser) {
+      console.log(newUser);
+      this.registerNewUser(newUser)
     }
   }
 };
