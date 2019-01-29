@@ -3,15 +3,38 @@
     <v-navigation-drawer
       :clipped="clipped"
       v-model="drawer"
+      class="accent"
+      dark
       fixed
       app>
+      <v-toolbar 
+        flat 
+        class="transparent">
+        <v-list 
+          class="pa-0 ml-auto">
+          <v-list-tile
+            avatar>
+            <v-list-tile-avatar>
+              <img src="https://randomuser.me/api/portraits/men/85.jpg">
+            </v-list-tile-avatar>
+
+            <v-list-tile-content>
+              <v-list-tile-title>John Leider</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-toolbar>
+
+      <v-divider/>
       <v-list>
         <v-list-tile
           v-show="isAuth"
           key="logout"
+          class="secondary--text"
+
           @click="handleLogout">
           <v-list-tile-action>
-            <v-icon>bubble_chart</v-icon>
+            <v-icon color="secondary">bubble_chart</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title v-text="'Logout'" />
@@ -33,34 +56,24 @@
     <v-toolbar
       ref="toolbar"
       :clipped-left="clipped"
+      color="transparent"
       app
+      flat
       fixed>
       <v-toolbar-side-icon @click="drawer = !drawer" />
 
-      <v-toolbar-title v-text="title"/>
+      <v-toolbar-title 
+        class="text--secondary" 
+        v-text="activePageName"/>
     </v-toolbar>
     <v-content>
-      <v-container 
+      <v-container
         align-content-center
         fill-height>
         <nuxt />
       </v-container>
     </v-content>
-    <v-navigation-drawer
-      :right="right"
-      v-model="rightDrawer"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-tile @click.native="right = !right">
-          <v-list-tile-action>
-            <v-icon light>compare_arrows</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
+
     <v-footer
       :fixed="fixed"
       app
@@ -76,20 +89,23 @@
     data() {
       return {
         clipped: false,
-        drawer: false,
+        drawer: true,
         fixed: false,
         items: [
-            { icon: 'apps', title: 'Welcome', to: '/' },
+          { icon: 'apps', title: 'Welcome', to: '/' },
           { icon: 'bubble_chart', title: 'Login', to: '/login' }
         ],
         miniVariant: false,
         right: true,
         rightDrawer: false,
-        title: 'Vuetify.js',
+        title: 'Page name',
       }
     },
     computed:{
       ...mapGetters(['isAuth']),
+      activePageName(){
+        return this.$route.name === 'index' ? 'Home' : this.$route.name
+      }
     },
     methods:{
       ...mapActions(['logout']),
