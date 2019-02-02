@@ -7,11 +7,12 @@ export default {
     user: null,
     token: null,
     loginErrors: {},
-    registerErrors:{},
+    registerErrors: {},
     isLoading: false
   },
   getters: {
     isAuth: state => !!state.user,
+    me: state => state.user,
     loginErrors: state => state.loginErrors,
     isLoading: state => state.isLoading,
     registerErrors: state => state.registerErrors
@@ -48,23 +49,23 @@ export default {
           console.log(e);
         });
     },
-    registerNewUser({commit}, newUserData){
-      commit('setLoading', true)
+    registerNewUser({ commit }, newUserData) {
+      commit("setLoading", true);
       axios
         .post(`${END_POINT}/register`, newUserData)
-        .then(({data}) => {
+        .then(({ data }) => {
           const { user, accessToken } = data;
           const auth = { accessToken };
           Cookie.set("auth", auth);
-          commit('setUser', user)
-          commit('setLoading', false)
+          commit("setUser", user);
+          commit("setLoading", false);
         })
         .catch(e => {
-          console.log(e)
-          const err = e.response.data
-          commit('setRegisterError', err)
-          commit('setLoading', false)
-        })
+          console.log(e);
+          const err = e.response.data;
+          commit("setRegisterError", err);
+          commit("setLoading", false);
+        });
     }
   },
   mutations: {

@@ -88,26 +88,10 @@ router.post("/register", (req, res) => {
   });
 });
 
-// ? @route GET to api/users/login
-// ? @description login user : returning JWT token
-// ! @ access Public
+//  @route POST to api/users/login
+//  @description login user : returning JWT token
+//  @ access Public
 
-/*
-// POST `/api/login` to log in the user and add him to the `req.session.authUser`
-app.post('/api/login', function (req, res) {
-  if (req.body.username === 'demo' && req.body.password === 'demo') {
-
-    return res.json({ username: 'demo' })
-  }
-  res.status(401).json({ error: 'Bad credentials' })
-})
-
-// POST `/api/logout` to log out the user and remove it from the `req.session`
-app.post('/api/logout', function (req, res) {
-  delete req.session.authUser
-  res.json({ ok: true })
-})
-*/
 
 router.post("/login", (req, res) => {
   const email = req.body.email;
@@ -159,9 +143,9 @@ router.post("/logout", (req, res) => {
   res.json({ success: true });
 });
 
-// ? @route GET to api/users/current
-// ? @description Return Current User
-// ! @access      Private
+//  @route GET to api/users/current
+//  @description Return Current User
+//  @access      Private
 
 router.get("/current", (req, res, next) => {
   passport.authenticate("jwt", (err, user, info) => {
@@ -169,13 +153,14 @@ router.get("/current", (req, res, next) => {
       return next(err);
     }
     if (!user) {
-      return res.json({ message: info.message });
+      return res.json({ user: false });
     }
+
+    const payload = { id: user.id, name: user.name, email: user.email, avatar: user.avatar };
+
     res.json({
-      msg: "Auth success 👌",
-      user: user.name,
-      id: user.id,
-      email: user.email
+      success: true,
+      user: payload,
     });
   })(req, res, next);
 });

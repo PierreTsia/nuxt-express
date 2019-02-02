@@ -1,5 +1,7 @@
 <template>
-  <v-app>
+  <v-app
+    class="grey lighten-4"
+  >
     <v-navigation-drawer
       :clipped="clipped"
       v-model="drawer"
@@ -15,11 +17,11 @@
           <v-list-tile
             avatar>
             <v-list-tile-avatar>
-              <img src="https://randomuser.me/api/portraits/men/85.jpg">
+              <img :src="`//${me.avatar}`">
             </v-list-tile-avatar>
 
             <v-list-tile-content>
-              <v-list-tile-title>John Leider</v-list-tile-title>
+              <v-list-tile-title>{{ me.name }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -36,7 +38,7 @@
             class="white--text"
           >
             <v-list-tile-action>
-              <v-icon :color="iconColor(link.slug)">{{ link.icon }}</v-icon>
+              <v-icon color="white">{{ link.icon }}</v-icon>
             </v-list-tile-action>
 
             <v-list-tile-content>
@@ -72,18 +74,19 @@
     <v-toolbar
       ref="toolbar"
       :clipped-left="clipped"
-      color="transparent"
+      class="grey lighten-4"
       app
       flat
       fixed>
       <v-toolbar-side-icon @click="drawer = !drawer" />
 
       <v-toolbar-title 
-        class="text--secondary" 
+        class="text--secondary"
         v-text="activePageName"/>
     </v-toolbar>
     <v-content>
       <v-container
+        class="grey lighten-4"
         align-content-center
         fill-height>
         <nuxt />
@@ -107,6 +110,12 @@ export default {
           title: "Home",
           route: "/",
           slug: "index"
+        },
+        {
+          icon: "widgets",
+          title: "Dashboard",
+          route: "/dashboard",
+          slug: "dashboard"
         },
         {
           icon: "local_activity",
@@ -134,7 +143,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["isAuth"]),
+    ...mapGetters(["isAuth", "me"]),
     activePageName() {
       return this.$route.name === "index" ? "Home" : this.$route.name;
     }
@@ -150,14 +159,13 @@ export default {
     handleRouteChange(route) {
       this.$router.push(route);
     },
-    iconColor(slug){
-      return this.$route.name === slug ? '#FF8E00' : 'white'
-    }
+
   }
 };
 </script>
 <style lang="stylus">
 .v-list__tile--active
-  color #FF8E00 !important
+  color white !important
+  background-color #610061
 
 </style>

@@ -10,10 +10,12 @@
     <v-text-field
       v-model="email"
       :error-messages="emailError"
-      prepend-icon="alternate_email"
+      prepend-icon="email"
       class="register_textField"
+      xs12
       label="Email"
-      required/>
+      required
+      type="text"/>
 
     <v-text-field
       v-model="password"

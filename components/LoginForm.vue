@@ -1,12 +1,16 @@
 <template>
   <div class="login__form container">
+
+
     <v-text-field
       v-model="email"
       :error-messages="emailError"
-      prepend-icon="alternate_email"
+      prepend-icon="email"
       class="login_textField"
+      xs12
       label="Email"
-      required/>
+      required
+      type="text"/>
 
     <v-text-field
       v-model="password"

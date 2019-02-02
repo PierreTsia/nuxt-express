@@ -3,8 +3,8 @@
     column
     justify-start
     align-center>
-    <v-container 
-      fluid
+    <v-container
+      class="pouet"
       fill-height
       grid-list-md>
       <v-layout 
@@ -15,14 +15,7 @@
           xs12 
           sm12
           md12>
-          <v-card 
-            color="purple" 
-            dark>
-            <v-card-title 
-              primary 
-              class="title">Lorem</v-card-title>
-            <v-card-text>{{ lorem }}</v-card-text>
-          </v-card>
+          <UserProfileCard :profile="mockProfile"/>
         </v-flex>
 
         <v-flex 
@@ -48,7 +41,7 @@
                     color="red lighten-2"
                     dark
                   >
-                    <v-card-text>{{ lorem.slice(0, 40) }}</v-card-text>
+                    <v-card-text>Lorem</v-card-text>
                   </v-card>
                 </v-flex>
               </v-layout>
@@ -63,7 +56,7 @@
           <v-card 
             color="blue lighten-2" 
             dark>
-            <v-card-text>{{ lorem.slice(0, 100) }}</v-card-text>
+            <v-card-text>Lorem</v-card-text>
           </v-card>
         </v-flex>
       </v-layout>
@@ -72,9 +65,9 @@
 </template>
 
 <script>
-import Logo from "~/components/Logo.vue";
-import VuetifyLogo from "~/components/VuetifyLogo.vue";
-import { mapActions, mapGetters } from "vuex";
+  import { mapActions, mapGetters } from "vuex";
+  import UserProfileCard from '@/components/UserProfileCard.vue';
+
 
 export default {
   fetch({ store, redirect }) {
@@ -84,13 +77,16 @@ export default {
   },
   layout:'dashboard',
   components: {
-    Logo,
-    VuetifyLogo
-  },
+    UserProfileCard,
+    },
   data(){
     return {
-      lorem: `Lorem ipsum dolor sit amet, mel at clita quando. Te sit oratio vituperatoribus, nam ad ipsum posidonium mediocritatem, explicari dissentiunt cu mea. Repudiare disputationi vim in, mollis iriure nec cu, alienum argumentum ius ad. Pri eu justo aeque torquatos.`
+      mockProfile: {
+        bio: 'I am a poor lonesome developer'
+      }
     }
+
+
   },
   computed: {
     ...mapGetters(["isAuth"])

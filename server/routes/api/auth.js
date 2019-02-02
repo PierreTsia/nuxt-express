@@ -56,7 +56,8 @@ router.post("/login", (req, res) => {
           (err, token) => {
             res.json({
               success: true,
-              token
+              token,
+              user: payload,
             });
           },
         );
@@ -67,28 +68,6 @@ router.post("/login", (req, res) => {
     });
   });
 });
-
-// [GET] /user
-router.get('/user', (req, res, next) => {
-    passport.authenticate("jwt", (err, user, info) => {
-      if (err) {
-        return next(err);
-      }
-      if (!user) {
-        return res.json({ message: info.message });
-      }
-      res.json({
-        msg: "Auth success 👌",
-        user,
-      });
-    })(req, res, next);
-  });
-
-// [POST] /logout
-router.post('/logout', (req, res, next) => {
-  res.json({ status: 'OK' })
-})
-
 
 module.exports = router
 

@@ -19,8 +19,7 @@ const createStore = () => {
               headers: { Authorization: `Bearer ${accessToken}` }
             };
             const response = await axios.get(`${END_POINT}/current`, config);
-
-            const user = response.data;
+            const { user } = response.data;
             await commit("setUser", user);
           } catch (err) {
             // No valid cookie found
