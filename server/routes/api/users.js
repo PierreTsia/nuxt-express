@@ -12,6 +12,7 @@ const keys = require("./../../../config/keys");
 
 //*models
 const User = require("../../../models/User");
+const Profile = require("../../../models/Profile");
 
 //* Validation
 const validateRegisterInput = require("../../validation/register");
@@ -64,7 +65,6 @@ router.post("/register", (req, res) => {
             .save()
             .then(savedUser => {
               //Sign token
-;
               const { id, name, email, avatar } = savedUser;
               const user = { id, name, email, avatar };
 
@@ -78,8 +78,8 @@ router.post("/register", (req, res) => {
                     accessToken: token,
                     user
                   });
-                },
-              )
+                }
+              );
             })
             .catch(err => console.log(err));
         });
@@ -91,7 +91,6 @@ router.post("/register", (req, res) => {
 //  @route POST to api/users/login
 //  @description login user : returning JWT token
 //  @ access Public
-
 
 router.post("/login", (req, res) => {
   const email = req.body.email;
@@ -123,7 +122,9 @@ router.post("/login", (req, res) => {
           payload,
           keys.secretOrKey,
           { expiresIn: 3600 },
-          (err, token) => {
+          async (err, token) => {
+            const profile = await Profile.findOne({user: user.id})
+            payload.profile = profile
             res.json({
               success: true,
               accessToken: token,
@@ -148,20 +149,28 @@ router.post("/logout", (req, res) => {
 //  @access      Private
 
 router.get("/current", (req, res, next) => {
-  passport.authenticate("jwt", (err, user, info) => {
+  passport.authenticate("jwt", async (err, user, info) => {
     if (err) {
       return next(err);
     }
     if (!user) {
-      return res.json({ user: false });
+      return res.json({user: false});
     }
+    const profile = await Profile.findOne({user: user.id})
 
-    const payload = { id: user.id, name: user.name, email: user.email, avatar: user.avatar };
-
+    const payload = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar,
+    };
     res.json({
-      success: true,
-      user: payload,
-    });
+        success: true,
+        user: payload,
+        profile,
+    })
+
+
   })(req, res, next);
 });
 

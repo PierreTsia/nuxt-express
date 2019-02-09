@@ -5,7 +5,19 @@
     elevation="2">
     <div class="profileUserCard_avatar">
       <h1 class="v-card__title white--text">{{ me.name }}</h1>
-      <h2 class="grey--text mb-4 subheading">Javascript Developper</h2>
+
+      <h2
+        v-if="userHasProfile"
+        class="grey--text mb-4 subheading">{{ userProfile.status }}</h2>
+      <h2
+        v-else
+        class="grey--text mb-4 subheading">Add a status to your profile</h2>
+
+      <EditProfileModal
+        :is-shown="profileIsEdited"
+        @onCancelClick="profileIsEdited = !profileIsEdited"
+        @onConfirmClick="handleProfileEditClick"/>
+
       <v-avatar
         :size="avatarSize">
         <img 
@@ -13,6 +25,7 @@
           alt="avatar">
       </v-avatar>
     </div>
+
     <div class="profileUserCard_content">
       <v-layout
         fill-height
@@ -36,11 +49,11 @@
           </v-btn>
           <v-list>
             <v-list-tile
-              v-for="(item, index) in items"
+              v-for="(item, index) in menuItems"
               :key="index"
               class="menu__item"
               active-class="red"
-              @click="isHovered(item.title)">
+              @click="item.handler">
               <v-icon class="mr-2">{{ item.icon }}</v-icon>
               <v-list-tile-title>
                 {{ item.title }}
@@ -48,14 +61,35 @@
             </v-list-tile>
           </v-list>
         </v-menu>
+
+        <v-card-title
+          class="card_title"
+          primary-title>
+          <div>
+            <div class="headline">User Name</div>
+            <span
+              v-if="userHasProfile"
+              class="grey--text">{{ userProfile.handle }}</span>
+            <span
+              v-else
+              class="grey--text">Complete your profile to register unique user name</span>
+          </div>
+        </v-card-title>
+
         <v-card-title
           class="card_title"
           primary-title>
           <div>
             <div class="headline">Bio</div>
-            <span class="grey--text">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</span>
+            <span 
+              v-if="userHasProfile" 
+              class="grey--text">{{ userProfile.bio }}</span>
+            <span 
+              v-else 
+              class="grey--text">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</span>
           </div>
         </v-card-title>
+
         <v-card-title
           class="card_title"
           primary-title>
@@ -63,12 +97,25 @@
             <div class="headline">Favorite Tags</div>
             <span class="grey--text">Subscribe to existing tags or create new ones...</span>
 
-            <v-chip
-              v-for="(tag, index) in mockTags"
-              :key="index"
-              :style="{backgroundColor: chipBackgroundColor}"
-              class="white--text"
-              close>{{ tag }}</v-chip>
+            <template v-if="!userHasProfile || !userProfile.tags.length">
+              <v-chip
+                v-for="(tag, index) in mockTags"
+                :key="index"
+                :style="{backgroundColor: chipBackgroundColor}"
+                class="white--text"
+                close>{{ tag }}
+              </v-chip>
+            </template>
+
+            <template v-else>
+              <v-chip
+                v-for="(tag, index) in userProfile.tags"
+                :key="index"
+                :style="{backgroundColor: chipBackgroundColor}"
+                class="white--text"
+                close>{{ tag }}
+              </v-chip>
+            </template>
           </div>
         </v-card-title>
       </v-layout>
@@ -80,27 +127,23 @@
           color="accent"
           dark>Rounded Button</v-btn>
       </div>
-
-
     </div>
-
   </v-card>
-
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import PopOverMenu from "./PopOverMenu";
+import EditProfileModal from "@/components/EditProfileModal.vue";
+import moment from 'moment'
 
 export default {
   name: "UserProfileCard",
   components: {
-    PopOverMenu
+    PopOverMenu,
+    EditProfileModal
   },
   props: {
-    profile: {
-      type: Object,
-      default: () => {}
-    }
+
   },
   data() {
     return {
@@ -108,22 +151,23 @@ export default {
       windowSize: "",
       activeMenuItem: null,
       mockTags: ["JavaScript", "VueJs", "React", "Node", "TypeScript"],
-      items: [
-        { title: "Edit Bio", icon: "create" },
-        { title: "Edit Tags", icon: "collections_bookmark" }
+      menuItems: [
+        {
+          title: "Edit profile",
+          icon: "create",
+          handler: this.editProfileClick
+        },
+        {
+          title: "Edit Tags",
+          icon: "collections_bookmark",
+          handler: this.editTagsClick
+        }
       ],
-      mockSocials: [
-        "facebook",
-        "twitter",
-        "github",
-        "instagram",
-        "linkedin",
-        "stackoverflow"
-      ]
+      profileIsEdited: false
     };
   },
   computed: {
-    ...mapGetters(["me"]),
+    ...mapGetters(["me", "userProfile", "userHasProfile", "profileErrors", "profileHasErrors"]),
     avatarSize() {
       if (this.windowSize <= 600) {
         return "75px";
@@ -148,8 +192,10 @@ export default {
     if (process.browser) {
       window.addEventListener("resize", this.handleResize);
     }
+
   },
   methods: {
+    ...mapActions(['updateProfile']),
     handleResize() {
       this.windowSize = document.documentElement.clientWidth;
     },
@@ -157,8 +203,23 @@ export default {
       this.activeMenuItem = itemSlug;
     },
     isActive(itemSlug) {
-      console.log(itemSlug);
       return itemSlug === this.activeMenuItem;
+    },
+    editProfileClick() {
+      this.profileIsEdited = !this.profileIsEdited;
+    },
+    editTagsClick() {
+      console.log("pouet tags");
+    },
+    async handleProfileEditClick(profile) {
+      const {dob, ...rest} = profile
+      const formatedDob = moment(dob).format()
+      const newProfile = {dob: formatedDob, ...rest, user: this.me}
+      this.updateProfile(newProfile).then(() => {
+       if(!this.profileHasErrors){
+         this.profileIsEdited = true
+       }
+     })
     }
   }
 };

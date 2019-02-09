@@ -12,100 +12,153 @@
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex 
-              xs12 
-              sm6 
-              md4>
+              xs12>
               <v-text-field 
-                label="Legal first name*" 
+                v-model="handle"
+                :error-messages="handleError"
+                label="User name*"
                 required/>
             </v-flex>
             <v-flex 
-              xs12 
-              sm6 
-              md4>
-              <v-text-field 
-                label="Legal middle name" 
-                hint="example of helper text only on focus"/>
-            </v-flex>
-            <v-flex 
-              xs12 
-              sm6 
-              md4>
+              xs12>
               <v-text-field
-                label="Legal last name*"
-                hint="example of persistent helper text"
-                persistent-hint
+                v-model="status"
+                :error-messages="statusError"
+                label="Status*"
                 required
-              />
-            </v-flex>
-            <v-flex xs12>
-              <v-text-field 
-                label="Email*" 
-                required/>
-            </v-flex>
-            <v-flex xs12>
-              <v-text-field 
-                label="Password*" 
-                type="password" 
-                required/>
+                hint="Freelance..."/>
             </v-flex>
             <v-flex 
-              xs12 
-              sm6>
-              <v-select
-                :items="['0-17', '18-29', '30-54', '54+']"
-                label="Age*"
-                required
+              xs12>
+              <v-textarea
+                v-model="bio"
+                auto-grow
+                label="Bio"
+                rows="5"
+                hint="Tell us a few words about yourself..."
               />
             </v-flex>
+
             <v-flex 
-              xs12 
+              xs12
               sm6>
-              <v-autocomplete
-                :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                label="Interests"
-                multiple
-              />
+              <DatePicker
+                :user-dob="formatDate(dob)"
+                @onDateSave="handleDateSave"/>
             </v-flex>
+            <v-flex
+              xs12
+              sm6>
+              <v-text-field
+                v-model="city"
+                label="City"/>
+            </v-flex>
+
           </v-layout>
         </v-container>
         <small>*indicates required field</small>
       </v-card-text>
       <v-card-actions>
-        <v-spacer/>
-        <v-btn 
-          color="blue darken-1" 
-          flat 
-          @click="$emit('onCancelClick')">Close</v-btn>
-        <v-btn
-          color="blue darken-1" 
-          flat 
-          @click="$emit('onConfirmClick')">Save</v-btn>
+        <v-layout 
+          row 
+          wrap 
+          xs12 
+          justify-center>
+          <v-btn
+
+            color="white"
+            class="mr-4 info"
+            flat
+            @click="$emit('onCancelClick')">Close</v-btn>
+
+          <v-btn
+            color="white"
+            class="info"
+            flat
+            @click.native="handleSubmitProfile">Save</v-btn>
+        </v-layout>
+        
+
+        
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
+import DatePicker from "@/components/base/DatePicker.vue";
+import moment from "moment";
+import { mapGetters } from "vuex";
+
 export default {
   name: "EditProfileModal",
+  components: {
+    DatePicker
+  },
   props: {
-    isShown : {
+    isShown: {
       type: Boolean,
-      default: false,
+      default: false
     }
   },
   data: () => ({
-    dialog: false
+    dialog: false,
+    bio: "",
+    dob: new Date(),
+    city: "",
+    handle: "",
+    status: "",
+    newProfile: null,
   }),
+  computed: {
+    ...mapGetters(["userProfile", "profileErrors"]),
+    handleError(){
+      return this.profileErrors && this.profileErrors.handle || null;
+    },
+    statusError(){
+      return this.profileErrors && this.profileErrors.status || null;
+    }
+
+  },
   watch: {
     isShown: {
       immediate: true,
-      handler(val){
-        this.dialog = val
+      handler(val) {
+        this.dialog = val;
       }
+    },
+  },
+
+  mounted() {
+    if (this.userProfile) {
+      const { handle, bio, status, dob, city } = this.userProfile;
+      this.handle = handle || "";
+      this.bio = bio || "";
+      this.status = status || "";
+      this.dob = dob || new Date()
+      this.city = city || null;
     }
   },
+  methods: {
+    handleDateSave({dob}) {
+      this.dob = dob;
+    },
+    formatDate(date) {
+      return date
+        ? moment(date).format("YYYY-MM-DD")
+        : moment(new Date()).format("YYYY-MM-DD");
+    },
+    handleSubmitProfile() {
+      const newProfile = {
+        handle: this.handle,
+        bio: this.bio,
+        status: this.status,
+        dob: this.dob,
+        city: this.city
+      };
+      this.$emit("onConfirmClick", newProfile);
+    }
+  }
 };
 </script>
 

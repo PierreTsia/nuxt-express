@@ -44,7 +44,8 @@ module.exports = {
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
     "@nuxtjs/axios",
-    "nuxt-material-design-icons"
+    "nuxt-material-design-icons",
+    ['@nuxtjs/moment', { locales: ['fr'], defaultLocale: 'fr' }],
   ],
 
   /*

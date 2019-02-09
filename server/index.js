@@ -8,7 +8,6 @@ const passport = require("passport");
 const { Nuxt, Builder } = require('nuxt')
 
 const users = require("./routes/api/users");
-const auth = require('./routes/api/auth')
 const profiles = require('./routes/api/profiles')
 
 
@@ -49,7 +48,6 @@ app.use(passport.initialize({}));
 
 app.get('/api', (req, res) => res.send({ message: "🖖 Hello World 🖖" }))
 app.use("/api/users", users);
-app.use("/api/auth", auth);
 app.use("/api/profiles", profiles);
 
 

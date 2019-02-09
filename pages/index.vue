@@ -4,7 +4,6 @@
     justify-start
     align-center>
     <v-container
-      class="pouet"
       fill-height
       grid-list-md>
       <v-layout 
@@ -15,7 +14,7 @@
           xs12 
           sm12
           md12>
-          <UserProfileCard :profile="mockProfile"/>
+          <UserProfileCard />
         </v-flex>
 
         <v-flex 
@@ -65,9 +64,8 @@
 </template>
 
 <script>
-  import { mapActions, mapGetters } from "vuex";
-  import UserProfileCard from '@/components/UserProfileCard.vue';
-
+import { mapActions, mapGetters } from "vuex";
+import UserProfileCard from "@/components/UserProfileCard.vue";
 
 export default {
   fetch({ store, redirect }) {
@@ -75,26 +73,21 @@ export default {
       return redirect("/login");
     }
   },
-  layout:'dashboard',
+  layout: "dashboard",
   components: {
-    UserProfileCard,
-    },
-  data(){
+    UserProfileCard
+  },
+  data() {
     return {
-      mockProfile: {
-        bio: 'I am a poor lonesome developer'
-      }
-    }
-
-
+    };
   },
   computed: {
     ...mapGetters(["isAuth"])
   },
-  watch :{
+  watch: {
     isAuth: {
-      handler(auth){
-        if(!auth)this.$router.push('/login')
+      handler(auth) {
+        if (!auth) this.$router.push("/login");
       }
     }
   },

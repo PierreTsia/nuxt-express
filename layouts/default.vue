@@ -78,7 +78,7 @@
         clipped: false,
         drawer: false,
         fixed: false,
-        items: [
+        menuItems: [
             { icon: 'apps', title: 'Welcome', to: '/' },
           { icon: 'bubble_chart', title: 'Login', to: '/login' }
         ],

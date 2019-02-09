@@ -5,7 +5,6 @@ const END_POINT = "api/users";
 export default {
   state: {
     user: null,
-    token: null,
     loginErrors: {},
     registerErrors: {},
     isLoading: false
@@ -15,7 +14,7 @@ export default {
     me: state => state.user,
     loginErrors: state => state.loginErrors,
     isLoading: state => state.isLoading,
-    registerErrors: state => state.registerErrors
+    registerErrors: state => state.registerErrors,
   },
   actions: {
     login({ commit }, payload) {
