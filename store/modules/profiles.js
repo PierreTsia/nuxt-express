@@ -4,9 +4,9 @@ const PROFILE_END_POINT = "api/profiles";
 
 export default {
   state: {
-    currentUserProfile:{},
+    currentUserProfile: {},
     errors: null,
-    profileLoading: false,
+    profileLoading: false
   },
   getters: {
     userHasProfile: state => !!state.currentUserProfile,
@@ -15,8 +15,33 @@ export default {
     profileHasErrors: state => !!state.errors
   },
   actions: {
+    async fetchUserProfile({ commit }) {
+      if(process.client){
+        const auth = Cookie.get("auth");
+        const cookie = JSON.parse(auth);
+        console.log(cookie);
+        const { accessToken } = cookie;
+        const config = {
+          headers: { Authorization: `Bearer ${accessToken}` }
+        };
+        const profileQuery = await axios.get(
+          `${PROFILE_END_POINT}/current`,
+          config
+        );
+
+        console.log("query", profileQuery)
+        try {
+          const profile  = profileQuery.data;
+          return commit('setUserProfile', profile)
+        } catch (e) {
+          console.log(e.response.data);
+        }
+      }
+
+    },
+
     updateProfile({ commit }, newProfile) {
-      commit('setProfileLoading', true)
+      commit("setProfileLoading", true);
       const auth = Cookie.get("auth");
       const cookie = JSON.parse(auth);
       console.log(cookie);
@@ -27,31 +52,30 @@ export default {
       console.log("auth", auth);
       axios
         .post(`${PROFILE_END_POINT}`, newProfile, config)
-        .then(({data}) => {
-          console.log(data)
-          const profile = data
-          commit('setProfileLoading', false)
-          commit("setUserProfile", profile)
-          commit("setProfileError", null)
+        .then(({ data }) => {
+          console.log(data);
+          const profile = data;
+          commit("setProfileLoading", false);
+          commit("setUserProfile", profile);
+          commit("setProfileError", null);
         })
         .catch(err => {
-          commit('setProfileLoading', false)
+          commit("setProfileLoading", false);
           const error = err.response.data;
           commit("setProfileError", error);
-        })
-
+        });
     }
   },
   mutations: {
-    setUserProfile(state, profile){
-      console.log(state)
-      state.currentUserProfile = profile
+    setUserProfile(state, profile) {
+      console.log(state);
+      state.currentUserProfile = profile;
     },
-    setProfileError(state, error){
-      state.errors = error
+    setProfileError(state, error) {
+      state.errors = error;
     },
-    setProfileLoading(state, value){
-      state.profileLoading = value
+    setProfileLoading(state, value) {
+      state.profileLoading = value;
     }
   }
 };

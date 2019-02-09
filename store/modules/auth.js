@@ -41,6 +41,7 @@ export default {
         .then(({ data }) => {
           Cookie.remove("auth");
           commit("setUser", false);
+          commit('setUserProfile', false)
           commit("setLoading", false);
         })
         .catch(e => {

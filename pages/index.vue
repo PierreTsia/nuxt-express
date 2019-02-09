@@ -68,9 +68,11 @@ import { mapActions, mapGetters } from "vuex";
 import UserProfileCard from "@/components/UserProfileCard.vue";
 
 export default {
-  fetch({ store, redirect }) {
+  async fetch({ store, redirect }) {
     if (!store.state.auth.user) {
       return redirect("/login");
+    } else {
+      await store.dispatch('fetchUserProfile')
     }
   },
   layout: "dashboard",
@@ -92,7 +94,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["logout"]),
+    ...mapActions(["logout","fetchUserProfile"]),
     handleLogout() {
       this.logout();
     }
