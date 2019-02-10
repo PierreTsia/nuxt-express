@@ -27,7 +27,8 @@ export default {
     userProfile: state => state.currentUserProfile,
     profileErrors: state => state.errors,
     profileHasErrors: state => !!state.errors,
-    userProfileTags: state => state.currentUserProfile.tags
+    userProfileTags: state => state.currentUserProfile.tags,
+    profileIsLoading: state => state.profileLoading
   },
 
   actions: {
@@ -65,7 +66,7 @@ export default {
     },
 
     upsertUserTags({ commit }, tags) {
-      console.log("from store", tags);
+      commit('setProfileLoading', true)
       axios.post(
         `${PROFILE_END_POINT}/tags/upsert`,
         tags,
@@ -74,6 +75,7 @@ export default {
         console.log(data)
         const { tags } = data
         commit("setProfileTags", tags)
+        commit("setProfileLoading", false)
       })
 
     }

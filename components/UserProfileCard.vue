@@ -128,7 +128,7 @@
             </template>
 
             <template v-else>
-              <template >
+              <template v-if="!profileIsLoading">
                 <v-chip
                   v-for="(tag, index) in userProfileTags"
                   :key="index"
@@ -171,6 +171,7 @@ export default {
     return {
       size: "150px",
       windowSize: "",
+      dialog:false,
       activeMenuItem: null,
       tagsAreUpdating: false,
       menuItems: [
@@ -197,7 +198,8 @@ export default {
       "profileErrors",
       "profileHasErrors",
       "userProfileTags",
-      "allTags"
+      "allTags",
+      "profileIsLoading"
     ]),
     nonPickedTags() {
       return this.allTags.filter(
@@ -222,11 +224,11 @@ export default {
       });
     }
   },
-  watch:{
-    userProfileTags:{
+  watch: {
+    userProfileTags: {
       immediate: true,
-      handler(tags){
-        this.userTags = tags
+      handler(tags) {
+        this.userTags = tags;
       }
     }
   },
@@ -254,8 +256,7 @@ export default {
       this.profileIsEdited = !this.profileIsEdited;
     },
     editTagsClick() {
-      this.tagsAreUpdating = !this.tagsAreUpdating
-
+      this.tagsAreUpdating = !this.tagsAreUpdating;
     },
     async handleProfileEditClick(profile) {
       const { dob, ...rest } = profile;
@@ -287,10 +288,10 @@ export default {
         { new: [], existing: [] }
       );
 
-      this.upsertUserTags(sortedTags)
-      this.tagsAreUpdating = false
+      this.upsertUserTags(sortedTags);
+      this.tagsAreUpdating = false;
 
-      console.log("sortedTags",sortedTags)
+      console.log("sortedTags", sortedTags);
     }
   }
 };
