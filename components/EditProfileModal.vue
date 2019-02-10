@@ -50,7 +50,7 @@
               xs12
               sm6>
               <v-text-field
-                v-model="city"
+                v-model="location"
                 label="City"/>
             </v-flex>
 
@@ -105,7 +105,7 @@ export default {
     dialog: false,
     bio: "",
     dob: new Date(),
-    city: "",
+    location: "",
     handle: "",
     status: "",
     newProfile: null,
@@ -131,12 +131,12 @@ export default {
 
   mounted() {
     if (this.userProfile) {
-      const { handle, bio, status, dob, city } = this.userProfile;
+      const { handle, bio, status, dob, location } = this.userProfile;
       this.handle = handle || "";
       this.bio = bio || "";
       this.status = status || "";
       this.dob = dob || new Date()
-      this.city = city || null;
+      this.location = location || null;
     }
   },
   methods: {
@@ -154,7 +154,7 @@ export default {
         bio: this.bio,
         status: this.status,
         dob: this.dob,
-        city: this.city
+        location: this.location
       };
       this.$emit("onConfirmClick", newProfile);
     }

@@ -2,56 +2,53 @@ import axios from "~/plugins/axios";
 const Cookie = process.client ? require("js-cookie") : undefined;
 const PROFILE_END_POINT = "api/profiles";
 
+const setHeaderCookie = () => {
+  if (process.client) {
+    const auth = Cookie.get("auth");
+    const cookie = JSON.parse(auth);
+    const { accessToken } = cookie;
+    return {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+  }
+};
+
 export default {
   state: {
     currentUserProfile: {},
     errors: null,
     profileLoading: false
   },
+
   getters: {
     userHasProfile: state => !!state.currentUserProfile,
     userProfile: state => state.currentUserProfile,
     profileErrors: state => state.errors,
     profileHasErrors: state => !!state.errors
   },
+
   actions: {
     async fetchUserProfile({ commit }) {
-      if(process.client){
-        const auth = Cookie.get("auth");
-        const cookie = JSON.parse(auth);
-        console.log(cookie);
-        const { accessToken } = cookie;
-        const config = {
-          headers: { Authorization: `Bearer ${accessToken}` }
-        };
+      if (process.client) {
         const profileQuery = await axios.get(
           `${PROFILE_END_POINT}/current`,
-          config
+          setHeaderCookie()
         );
-
-        console.log("query", profileQuery)
         try {
-          const profile  = profileQuery.data;
-          return commit('setUserProfile', profile)
+          const profile = profileQuery.data;
+          return commit("setUserProfile", profile);
         } catch (e) {
           console.log(e.response.data);
         }
       }
-
     },
 
     updateProfile({ commit }, newProfile) {
       commit("setProfileLoading", true);
-      const auth = Cookie.get("auth");
-      const cookie = JSON.parse(auth);
-      console.log(cookie);
-      const { accessToken } = cookie;
-      const config = {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      };
-      console.log("auth", auth);
       axios
-        .post(`${PROFILE_END_POINT}`, newProfile, config)
+        .post(`${PROFILE_END_POINT}`, newProfile, setHeaderCookie())
         .then(({ data }) => {
           console.log(data);
           const profile = data;
@@ -64,8 +61,18 @@ export default {
           const error = err.response.data;
           commit("setProfileError", error);
         });
+    },
+
+    async upsertUserTags({ commit }, tags) {
+      console.log("from store", tags);
+      const profileQuery = await axios.get(
+        `${PROFILE_END_POINT}/update`,
+        setHeaderCookie()
+      );
+      console.log(profileQuery);
     }
   },
+
   mutations: {
     setUserProfile(state, profile) {
       console.log(state);

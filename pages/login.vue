@@ -98,7 +98,6 @@ export default {
       this.login(user);
     },
     handleRegisterRequest(newUser) {
-      console.log(newUser);
       this.registerNewUser(newUser)
     }
   }

@@ -19,7 +19,7 @@ module.exports = {
         rel: "stylesheet",
         href:
           "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons"
-      },
+      }
     ]
   },
 
@@ -31,12 +31,15 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: ["~/assets/style/app.styl"],
+  css: [
+    "~/assets/style/app.styl",
+    "node_modules/vue-multiselect/dist/vue-multiselect.min.css",
+  ],
 
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: ["@/plugins/vuetify"],
+  plugins: ["@/plugins/vuetify", "@/plugins/vue-multiselect"],
 
   /*
   ** Nuxt.js modules
@@ -45,7 +48,7 @@ module.exports = {
     // Doc: https://github.com/nuxt-community/axios-module#usage
     "@nuxtjs/axios",
     "nuxt-material-design-icons",
-    ['@nuxtjs/moment', { locales: ['fr'], defaultLocale: 'fr' }],
+    ["@nuxtjs/moment", { locales: ["fr"], defaultLocale: "fr" }]
   ],
 
   /*

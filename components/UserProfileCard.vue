@@ -19,18 +19,23 @@
         @onConfirmClick="handleProfileEditClick"/>
 
       <v-avatar
-        :size="avatarSize">
-        <img 
+        :size="avatarSize"
+        class="userAvatar">
+        <img
           :src="me.avatar"
           alt="avatar">
       </v-avatar>
+
+      <h2 class="white--text mt-4 subheading">
+        <v-icon class="white--text">my_location</v-icon>
+        {{ userProfile.location }}</h2>
+
     </div>
 
     <div class="profileUserCard_content">
       <v-layout
         fill-height
         column
-        align-center
         justify-end
         fluid>
         <v-menu
@@ -91,30 +96,42 @@
         </v-card-title>
 
         <v-card-title
-          class="card_title"
+          class="card_title user__tags"
           primary-title>
           <div>
             <div class="headline">Favorite Tags</div>
             <span class="grey--text">Subscribe to existing tags or create new ones...</span>
 
-            <template v-if="!userHasProfile || !userProfile.tags.length">
+            <template v-if="userHasProfile && userProfile.tags.length">
               <v-chip
                 v-for="(tag, index) in mockTags"
                 :key="index"
                 :style="{backgroundColor: chipBackgroundColor}"
-                class="white--text"
+                class="white&#45;&#45;text"
                 close>{{ tag }}
               </v-chip>
             </template>
-
-            <template v-else>
-              <v-chip
-                v-for="(tag, index) in userProfile.tags"
-                :key="index"
-                :style="{backgroundColor: chipBackgroundColor}"
-                class="white--text"
-                close>{{ tag }}
-              </v-chip>
+            <template>
+              <template v-if="userTags">
+                <v-chip
+                  v-for="(tag, index) in userTags"
+                  :key="index"
+                  :style="{backgroundColor: chipBackgroundColor}"
+                  class="tag__chip white--text"
+                  close
+                  @input="handleDeleteChip(tag, index)">{{ tag }}
+                </v-chip>
+              </template>
+              <multiselect
+                v-model="userTags"
+                :multiple="true"
+                :options="mockTags"
+                :taggable="true"
+                tag-placeholder="Add this as new tag"
+                placeholder="Search or add a tag"
+                class="tag__multiselect"
+                @tag="addNewTag"/>
+              <v-btn @click="handleUpsertUserTags">Confirm</v-btn>
             </template>
           </div>
         </v-card-title>
@@ -134,17 +151,18 @@
 import { mapGetters, mapActions } from "vuex";
 import PopOverMenu from "./PopOverMenu";
 import EditProfileModal from "@/components/EditProfileModal.vue";
-import moment from 'moment'
+import moment from "moment";
+import Multiselect from "vue-multiselect";
 
 export default {
   name: "UserProfileCard",
   components: {
     PopOverMenu,
-    EditProfileModal
+    EditProfileModal,
+    Multiselect
   },
-  props: {
 
-  },
+  props: {},
   data() {
     return {
       size: "150px",
@@ -163,11 +181,18 @@ export default {
           handler: this.editTagsClick
         }
       ],
-      profileIsEdited: false
+      profileIsEdited: false,
+      userTags: []
     };
   },
   computed: {
-    ...mapGetters(["me", "userProfile", "userHasProfile", "profileErrors", "profileHasErrors"]),
+    ...mapGetters([
+      "me",
+      "userProfile",
+      "userHasProfile",
+      "profileErrors",
+      "profileHasErrors"
+    ]),
     avatarSize() {
       if (this.windowSize <= 600) {
         return "75px";
@@ -192,10 +217,9 @@ export default {
     if (process.browser) {
       window.addEventListener("resize", this.handleResize);
     }
-
   },
   methods: {
-    ...mapActions(['updateProfile']),
+    ...mapActions(["updateProfile", "upsertUserTags"]),
     handleResize() {
       this.windowSize = document.documentElement.clientWidth;
     },
@@ -212,14 +236,27 @@ export default {
       console.log("pouet tags");
     },
     async handleProfileEditClick(profile) {
-      const {dob, ...rest} = profile
-      const formatedDob = moment(dob).format()
-      const newProfile = {dob: formatedDob, ...rest, user: this.me}
+      const { dob, ...rest } = profile;
+      const formatedDob = moment(dob).format();
+      const newProfile = { dob: formatedDob, ...rest, user: this.me };
       this.updateProfile(newProfile).then(() => {
-       if(!this.profileHasErrors){
-         this.profileIsEdited = true
-       }
-     })
+        if (!this.profileHasErrors) {
+          this.profileIsEdited = true;
+        }
+      });
+    },
+    addNewTag(tag) {
+      console.log(tag);
+      this.userTags.push(tag)
+    },
+    handleDeleteChip(label, index){
+      this.userTags = this.userTags.filter((tag, i) => i !== index)
+      console.log('label', label)
+      console.log('index', index)
+
+    },
+    handleUpsertUserTags(){
+      this.upsertUserTags(this.userTags)
     }
   }
 };
@@ -249,6 +286,20 @@ export default {
       grid-area c
       background-color white
       position relative
+      .user__tags
+        &>div
+          width 100%
+        .multiselect
+        &.tag__multiselect
+          border 0
+          width 100%
+          margin-top 30px
+          .multiselect__tags
+            display none !important
+
+
+
+
       .pop-over-menu
         position absolute
         top 20px
