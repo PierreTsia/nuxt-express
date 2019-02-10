@@ -1,6 +1,7 @@
 import Vuex from "vuex";
 import auth from "./modules/auth";
 import profiles from "./modules/profiles"
+import tags from "./modules/tags"
 
 import axios from "~/plugins/axios";
 
@@ -24,10 +25,6 @@ const createStore = () => {
             const { user, profile } = userQuery.data;
             await commit("setUser", user);
             await commit("setUserProfile", profile)
-           /* const profileQuery = await axios.get(`${PROFILE_END_POINT}/current`, config);
-            const { profile } = profileQuery.data;
-            await commit("setUserProfile", profile);*/
-
 
           } catch (err) {
             // No valid cookie found
@@ -43,6 +40,7 @@ const createStore = () => {
     modules: {
       auth,
       profiles,
+      tags,
     }
   });
 };

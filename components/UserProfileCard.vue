@@ -102,36 +102,40 @@
             <div class="headline">Favorite Tags</div>
             <span class="grey--text">Subscribe to existing tags or create new ones...</span>
 
-            <template v-if="userHasProfile && userProfile.tags.length">
-              <v-chip
-                v-for="(tag, index) in mockTags"
-                :key="index"
-                :style="{backgroundColor: chipBackgroundColor}"
-                class="white&#45;&#45;text"
-                close>{{ tag }}
-              </v-chip>
-            </template>
-            <template>
-              <template v-if="userTags">
+
+            <template v-if="tagsAreUpdating">
+              <template >
                 <v-chip
                   v-for="(tag, index) in userTags"
                   :key="index"
-                  :style="{backgroundColor: chipBackgroundColor}"
+                  :style="{backgroundColor: tag.color? tag.color : chipBackgroundColor}"
                   class="tag__chip white--text"
                   close
-                  @input="handleDeleteChip(tag, index)">{{ tag }}
+                  @input="handleDeleteChip(tag, index)">{{ tag._id ? tag.label : tag }}
                 </v-chip>
               </template>
               <multiselect
                 v-model="userTags"
                 :multiple="true"
-                :options="mockTags"
+                :options="nonPickedTags"
                 :taggable="true"
+                label="label"
                 tag-placeholder="Add this as new tag"
                 placeholder="Search or add a tag"
                 class="tag__multiselect"
                 @tag="addNewTag"/>
               <v-btn @click="handleUpsertUserTags">Confirm</v-btn>
+            </template>
+
+            <template v-else>
+              <template >
+                <v-chip
+                  v-for="(tag, index) in userProfileTags"
+                  :key="index"
+                  :style="{backgroundColor: tag.color? tag.color : chipBackgroundColor}"
+                  class="tag__chip white--text">{{ tag._id ? tag.label : tag }}
+                </v-chip>
+              </template>
             </template>
           </div>
         </v-card-title>
@@ -168,7 +172,7 @@ export default {
       size: "150px",
       windowSize: "",
       activeMenuItem: null,
-      mockTags: ["JavaScript", "VueJs", "React", "Node", "TypeScript"],
+      tagsAreUpdating: false,
       menuItems: [
         {
           title: "Edit profile",
@@ -191,8 +195,16 @@ export default {
       "userProfile",
       "userHasProfile",
       "profileErrors",
-      "profileHasErrors"
+      "profileHasErrors",
+      "userProfileTags",
+      "allTags"
     ]),
+    nonPickedTags() {
+      return this.allTags.filter(
+        sourceTag =>
+          !this.userProfileTags.some(tag => tag._id === sourceTag._id)
+      );
+    },
     avatarSize() {
       if (this.windowSize <= 600) {
         return "75px";
@@ -210,6 +222,14 @@ export default {
       });
     }
   },
+  watch:{
+    userProfileTags:{
+      immediate: true,
+      handler(tags){
+        this.userTags = tags
+      }
+    }
+  },
   beforeDestroy() {
     window.removeEventListener("resize", this.handleResize);
   },
@@ -217,9 +237,10 @@ export default {
     if (process.browser) {
       window.addEventListener("resize", this.handleResize);
     }
+    this.fetchAllTags();
   },
   methods: {
-    ...mapActions(["updateProfile", "upsertUserTags"]),
+    ...mapActions(["updateProfile", "upsertUserTags", "fetchAllTags"]),
     handleResize() {
       this.windowSize = document.documentElement.clientWidth;
     },
@@ -233,7 +254,8 @@ export default {
       this.profileIsEdited = !this.profileIsEdited;
     },
     editTagsClick() {
-      console.log("pouet tags");
+      this.tagsAreUpdating = !this.tagsAreUpdating
+
     },
     async handleProfileEditClick(profile) {
       const { dob, ...rest } = profile;
@@ -247,16 +269,28 @@ export default {
     },
     addNewTag(tag) {
       console.log(tag);
-      this.userTags.push(tag)
+      this.userTags.push(tag.trim().toLowerCase());
     },
-    handleDeleteChip(label, index){
-      this.userTags = this.userTags.filter((tag, i) => i !== index)
-      console.log('label', label)
-      console.log('index', index)
+    handleDeleteChip(label, index) {
+      this.userTags = this.userTags.filter((tag, i) => i !== index);
+      console.log("label", label);
+      console.log("index", index);
+    },
+    handleUpsertUserTags() {
+      const sortedTags = this.userTags.reduce(
+        (sortedTags, tag) => {
+          tag._id
+            ? sortedTags.existing.push(tag)
+            : sortedTags.new.push({ label: tag });
+          return sortedTags;
+        },
+        { new: [], existing: [] }
+      );
 
-    },
-    handleUpsertUserTags(){
-      this.upsertUserTags(this.userTags)
+      this.upsertUserTags(sortedTags)
+      this.tagsAreUpdating = false
+
+      console.log("sortedTags",sortedTags)
     }
   }
 };

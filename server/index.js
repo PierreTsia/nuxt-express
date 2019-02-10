@@ -8,6 +8,7 @@ const { Nuxt, Builder } = require("nuxt");
 
 const users = require("./routes/api/users");
 const profiles = require("./routes/api/profiles");
+const tags = require("./routes/api/tags");
 
 //Express App
 const app = express();
@@ -41,6 +42,7 @@ app.use(passport.initialize({}));
 app.get("/api", (req, res) => res.send({ message: "🖖 Hello World 🖖" }));
 app.use("/api/users", users);
 app.use("/api/profiles", profiles);
+app.use("/api/tags", tags);
 
 //Port
 const host = process.env.HOST || "127.0.0.1";

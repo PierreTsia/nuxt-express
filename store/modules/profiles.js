@@ -26,7 +26,8 @@ export default {
     userHasProfile: state => !!state.currentUserProfile,
     userProfile: state => state.currentUserProfile,
     profileErrors: state => state.errors,
-    profileHasErrors: state => !!state.errors
+    profileHasErrors: state => !!state.errors,
+    userProfileTags: state => state.currentUserProfile.tags
   },
 
   actions: {
@@ -63,13 +64,18 @@ export default {
         });
     },
 
-    async upsertUserTags({ commit }, tags) {
+    upsertUserTags({ commit }, tags) {
       console.log("from store", tags);
-      const profileQuery = await axios.get(
-        `${PROFILE_END_POINT}/update`,
+      axios.post(
+        `${PROFILE_END_POINT}/tags/upsert`,
+        tags,
         setHeaderCookie()
-      );
-      console.log(profileQuery);
+      ).then(({data}) => {
+        console.log(data)
+        const { tags } = data
+        commit("setProfileTags", tags)
+      })
+
     }
   },
 
@@ -83,6 +89,9 @@ export default {
     },
     setProfileLoading(state, value) {
       state.profileLoading = value;
+    },
+    setProfileTags(state, tags){
+      state.currentUserProfile.tags = tags
     }
   }
 };

@@ -156,7 +156,7 @@ router.get("/current", (req, res, next) => {
     if (!user) {
       return res.json({user: false});
     }
-    const profile = await Profile.findOne({user: user.id})
+    const profile = await Profile.findOne({user: user.id}).populate('tags')
 
     const payload = {
       id: user.id,

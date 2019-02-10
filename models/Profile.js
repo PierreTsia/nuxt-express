@@ -31,10 +31,12 @@ const ProfileSchema = new Schema({
     required: true
   },
 
-  tags: {
-    type: [Schema.Types.ObjectId],
-    ref: "tag"
-  },
+  tags: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "tag"
+    }
+  ],
 
   bio: {
     type: String
@@ -120,7 +122,7 @@ const ProfileSchema = new Schema({
     github: {
       type: String
     }
-  },
+  }
 });
 
 module.exports = Profile = mongoose.model("profile", ProfileSchema);

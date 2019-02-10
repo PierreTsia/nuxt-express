@@ -12,10 +12,13 @@ const keys = require("./../../../config/keys");*/
 // Load Profile Model
 const User = require("../../../models/User");
 const Profile = require("../../../models/Profile");
+const Tag = require("../../../models/Tag");
 
 //!* Validation
 const ValidateProfileInput = require("../../validation/profile");
 const profilesEqualityCheck = require("../../helpers/profileEquality");
+const randomColor = require("../../helpers/randomColor");
+const sanitizeTag = require("../../helpers/sanitizeTag");
 
 //**ROUTES
 
@@ -42,6 +45,7 @@ router.get("/current", (req, res, next) => {
       const userId = user.id;
 
       Profile.findOne({ user: userId })
+        .populate("tags")
         .then(profile => {
           if (!profile) {
             errors.noprofile = "There is no profile for this user";
@@ -68,7 +72,6 @@ router.post("/", (req, res, next) => {
       errors.user = "user not found";
       return res.status(400).json(errors);
     } else {
-
       const { errors, isValid } = ValidateProfileInput(req.body);
       // Check Validation
       if (!isValid) {
@@ -124,8 +127,8 @@ router.post("/", (req, res, next) => {
 // ? @route POST to api/profiles/current
 // ? @description Test profiles route
 // ! @ access Restricted
-router.get("/update", (req, res, next) => {
-  console.log("req header", req.headers)
+router.post("/tags/upsert", (req, res, next) => {
+  console.log("req header", req.headers);
   passport.authenticate("jwt", async (err, user, info) => {
     if (err) {
       return next(err);
@@ -143,7 +146,46 @@ router.get("/update", (req, res, next) => {
           errors.noprofile = "There is no profile for this user";
           return res.status(404).json(errors);
         }
-        res.json(userProfile);
+
+        //sort tags
+        const mergedTags = req.body;
+        console.log("tous les tags", mergedTags);
+
+        //save new created tags
+        const newSavedTags = [];
+
+
+
+        if (mergedTags.new.length) {
+          for (let newTag of mergedTags.new) {
+            const existingTag = await Tag.findOne({label: newTag.label})
+            console.log("bipp tag found",existingTag)
+            if(!existingTag) {
+              const createdTag = await new Tag({
+                label: sanitizeTag(newTag.label),
+                color: randomColor()
+              }).save();
+              newSavedTags.push(createdTag);
+            }
+          }
+
+
+
+          //find
+        }
+        const newUsertags = mergedTags.existing.concat(newSavedTags);
+
+        Profile.findOneAndUpdate(
+          { user: userId },
+          { tags: newUsertags },
+          { new: true }
+        ).then(profile => {
+          console.log("profile", profile);
+          res.json({success: true, tags: newUsertags})
+        });
+
+
+        //res.json(userProfile);
       } catch (e) {
         res.status(404).json(e);
       }
