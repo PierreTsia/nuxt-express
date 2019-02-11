@@ -17,7 +17,7 @@ const setHeaderCookie = () => {
 
 export default {
   state: {
-    currentUserProfile: {},
+    currentUserProfile: null,
     errors: null,
     profileLoading: false
   },
@@ -27,7 +27,7 @@ export default {
     userProfile: state => state.currentUserProfile,
     profileErrors: state => state.errors,
     profileHasErrors: state => !!state.errors,
-    userProfileTags: state => state.currentUserProfile.tags,
+    userProfileTags: state => state.currentUserProfile ? state.currentUserProfile.tags :  [],
     profileIsLoading: state => state.profileLoading
   },
 

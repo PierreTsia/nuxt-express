@@ -26,8 +26,9 @@
           alt="avatar">
       </v-avatar>
 
-      <h2 class="white--text mt-4 subheading">
-        <v-icon class="white--text">my_location</v-icon>
+      <h2 
+        v-if="userHasProfile"
+        class="white--text mt-4 subheading">
         {{ userProfile.location }}</h2>
 
     </div>
@@ -102,32 +103,7 @@
             <div class="headline">Favorite Tags</div>
             <span class="grey--text">Subscribe to existing tags or create new ones...</span>
 
-
-            <template v-if="tagsAreUpdating">
-              <template >
-                <v-chip
-                  v-for="(tag, index) in userTags"
-                  :key="index"
-                  :style="{backgroundColor: tag.color? tag.color : chipBackgroundColor}"
-                  class="tag__chip white--text"
-                  close
-                  @input="handleDeleteChip(tag, index)">{{ tag._id ? tag.label : tag }}
-                </v-chip>
-              </template>
-              <multiselect
-                v-model="userTags"
-                :multiple="true"
-                :options="nonPickedTags"
-                :taggable="true"
-                label="label"
-                tag-placeholder="Add this as new tag"
-                placeholder="Search or add a tag"
-                class="tag__multiselect"
-                @tag="addNewTag"/>
-              <v-btn @click="handleUpsertUserTags">Confirm</v-btn>
-            </template>
-
-            <template v-else>
+            <template v-if="!tagsAreUpdating && userHasProfile">
               <template v-if="!profileIsLoading">
                 <v-chip
                   v-for="(tag, index) in userProfileTags"
@@ -137,8 +113,18 @@
                 </v-chip>
               </template>
             </template>
+
           </div>
         </v-card-title>
+        <template v-if="tagsAreUpdating && userHasProfile">
+          <MultiSelectTags 
+            :tags="allTags" 
+            @submitNewTags="handleUpsertUserTags"/>
+
+
+        </template>
+
+
       </v-layout>
     </div>
     <div class="profileUserCard_bottom_bar">
@@ -156,14 +142,14 @@ import { mapGetters, mapActions } from "vuex";
 import PopOverMenu from "./PopOverMenu";
 import EditProfileModal from "@/components/EditProfileModal.vue";
 import moment from "moment";
-import Multiselect from "vue-multiselect";
+import MultiSelectTags from "@/components/MultiSelectTags.vue"
 
 export default {
   name: "UserProfileCard",
   components: {
     PopOverMenu,
     EditProfileModal,
-    Multiselect
+    MultiSelectTags,
   },
 
   props: {},
@@ -230,6 +216,14 @@ export default {
       handler(tags) {
         this.userTags = tags;
       }
+    },
+    tagsAreUpdating:{
+      immedate: true,
+      handler(val){
+        if(val){
+          console.log(this.$refs)
+        }
+      }
     }
   },
   beforeDestroy() {
@@ -240,6 +234,7 @@ export default {
       window.addEventListener("resize", this.handleResize);
     }
     this.fetchAllTags();
+    console.log(this.$refs)
   },
   methods: {
     ...mapActions(["updateProfile", "upsertUserTags", "fetchAllTags"]),
@@ -254,6 +249,7 @@ export default {
     },
     editProfileClick() {
       this.profileIsEdited = !this.profileIsEdited;
+
     },
     editTagsClick() {
       this.tagsAreUpdating = !this.tagsAreUpdating;
@@ -277,12 +273,14 @@ export default {
       console.log("label", label);
       console.log("index", index);
     },
-    handleUpsertUserTags() {
-      const sortedTags = this.userTags.reduce(
+    handleUpsertUserTags(newTags) {
+      console.log(newTags)
+
+      const sortedTags = newTags.reduce(
         (sortedTags, tag) => {
-          tag._id
-            ? sortedTags.existing.push(tag)
-            : sortedTags.new.push({ label: tag });
+          typeof tag === 'string'
+            ? sortedTags.new.push({ label: tag })
+            : sortedTags.existing.push(tag) ;
           return sortedTags;
         },
         { new: [], existing: [] }
@@ -321,19 +319,6 @@ export default {
       grid-area c
       background-color white
       position relative
-      .user__tags
-        &>div
-          width 100%
-        .multiselect
-        &.tag__multiselect
-          border 0
-          width 100%
-          margin-top 30px
-          .multiselect__tags
-            display none !important
-
-
-
 
       .pop-over-menu
         position absolute
