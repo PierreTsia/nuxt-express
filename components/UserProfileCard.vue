@@ -217,14 +217,6 @@ export default {
         this.userTags = tags;
       }
     },
-    tagsAreUpdating:{
-      immedate: true,
-      handler(val){
-        if(val){
-          console.log(this.$refs)
-        }
-      }
-    }
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.handleResize);
@@ -234,7 +226,6 @@ export default {
       window.addEventListener("resize", this.handleResize);
     }
     this.fetchAllTags();
-    console.log(this.$refs)
   },
   methods: {
     ...mapActions(["updateProfile", "upsertUserTags", "fetchAllTags"]),

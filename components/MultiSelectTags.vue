@@ -10,7 +10,7 @@
       @input="handleDeleteChip(tag, index)">
       {{ tag._id ? tag.label : tag }}
     </v-chip>
-    <v-layout 
+    <v-layout
       row
       align-center
       wrap>
@@ -32,6 +32,10 @@
         color="warning"
         @click="handleAddNewTag">
         <v-icon>library_add</v-icon>
+        <vue-material-icon
+          :size="32"
+          :color="red"
+          name="favorite"/>
       </v-btn>
 
     </v-layout>
@@ -87,14 +91,8 @@ export default {
     console.log(this.$refs);
   },
   methods: {
-    addExistingTag(tag) {
-      this.userTags.push(tag);
-    },
-    addNewTag() {
-      console.log("add");
-    },
+
     handleDeleteChip(tag, index) {
-      console.log("delete", index);
       this.userTags = this.userTags.filter(
         (tag, tagIndex) => tagIndex !== index
       );
@@ -104,16 +102,7 @@ export default {
         this.userTags.push(this.inputValue.trim().toLowerCase())
       }
     },
-    handleTextChange(tag) {
-      if (typeof tag === "string") {
-        console.log("nex tag bro");
-      } else {
-        this.userTags.push(tag);
-      }
-    },
-    test(e) {
-      console.log("YIHHA", this.inputValue);
-    }
+
   }
 };
 </script>

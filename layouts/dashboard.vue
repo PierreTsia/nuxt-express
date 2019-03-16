@@ -9,10 +9,10 @@
       dark
       fixed
       app>
-      <v-toolbar 
-        flat 
+      <v-toolbar
+        flat
         class="transparent">
-        <v-list 
+        <v-list
           class="pa-0 ml-auto">
           <v-list-tile
             avatar>
@@ -80,15 +80,13 @@
       fixed>
       <v-toolbar-side-icon @click="drawer = !drawer" />
 
-      <v-toolbar-title 
+      <v-toolbar-title
         class="text--secondary"
         v-text="activePageName"/>
     </v-toolbar>
     <v-content>
       <v-container
-        class="grey lighten-4"
-        align-content-center
-        fill-height>
+        class="grey lighten-4">
         <nuxt />
       </v-container>
     </v-content>

@@ -30,6 +30,34 @@ router.get("/test", (req, res) =>
   res.json({ message: "api/profiles route works fine 🖖" })
 );
 
+
+// ? @route GET to api/profiles/all
+// ? @description all profiles route
+// ! @ access Private
+
+router.get("/all", (req, res, next) => {
+  passport.authenticate("jwt", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    const errors = {};
+    if (!user) {
+      return res.json({ error: "Unauthorized" });
+    } else {
+      Profile.find({})
+        .populate(["tags", "user"])
+        .then(profiles => {
+          if (!profiles) {
+            errors.noprofile = "No Profiles found";
+            return res.json({ errors });
+          }
+          res.json({profiles});
+        })
+        .catch(e => res.status(404).json(e));
+    }
+  })(req, res, next);
+})
+
 // ? @route GET to api/profiles/current
 // ? @description Test profiles route
 // ! @ access Restricted
@@ -49,7 +77,7 @@ router.get("/current", (req, res, next) => {
         .then(profile => {
           if (!profile) {
             errors.noprofile = "There is no profile for this user";
-            return res.status(404).json(errors);
+            return res.json({ errors });
           }
           res.json(profile);
         })
@@ -154,13 +182,11 @@ router.post("/tags/upsert", (req, res, next) => {
         //save new created tags
         const newSavedTags = [];
 
-
-
         if (mergedTags.new.length) {
           for (let newTag of mergedTags.new) {
-            const existingTag = await Tag.findOne({label: newTag.label})
-            console.log("bipp tag found",existingTag)
-            if(!existingTag) {
+            const existingTag = await Tag.findOne({ label: newTag.label });
+            console.log("bipp tag found", existingTag);
+            if (!existingTag) {
               const createdTag = await new Tag({
                 label: sanitizeTag(newTag.label),
                 color: randomColor()
@@ -168,8 +194,6 @@ router.post("/tags/upsert", (req, res, next) => {
               newSavedTags.push(createdTag);
             }
           }
-
-
 
           //find
         }
@@ -181,9 +205,8 @@ router.post("/tags/upsert", (req, res, next) => {
           { new: true }
         ).then(profile => {
           console.log("profile", profile);
-          res.json({success: true, tags: newUsertags})
+          res.json({ success: true, tags: newUsertags });
         });
-
 
         //res.json(userProfile);
       } catch (e) {
