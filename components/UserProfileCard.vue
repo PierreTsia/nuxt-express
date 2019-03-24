@@ -103,15 +103,13 @@
             <div class="headline">Favorite Tags</div>
             <span class="grey--text">Subscribe to existing tags or create new ones...</span>
 
-            <template v-if="!tagsAreUpdating && userHasProfile">
-              <template v-if="!profileIsLoading">
-                <v-chip
-                  v-for="(tag, index) in userProfileTags"
-                  :key="index"
-                  :style="{backgroundColor: tag.color? tag.color : chipBackgroundColor}"
-                  class="tag__chip white--text">{{ tag._id ? tag.label : tag }}
-                </v-chip>
-              </template>
+            <template v-if="!tagsAreUpdating && userTags.length">
+              <v-chip
+                v-for="(tag, index) in userTags"
+                :key="index"
+                :style="{backgroundColor: tag.color? tag.color : chipBackgroundColor}"
+                class="tag__chip white--text">{{ tag._id ? tag.label : tag }}
+              </v-chip>
             </template>
 
           </div>
@@ -142,14 +140,14 @@ import { mapGetters, mapActions } from "vuex";
 import PopOverMenu from "./PopOverMenu";
 import EditProfileModal from "@/components/EditProfileModal.vue";
 import moment from "moment";
-import MultiSelectTags from "@/components/MultiSelectTags.vue"
+import MultiSelectTags from "@/components/MultiSelectTags.vue";
 
 export default {
   name: "UserProfileCard",
   components: {
     PopOverMenu,
     EditProfileModal,
-    MultiSelectTags,
+    MultiSelectTags
   },
 
   props: {},
@@ -157,7 +155,7 @@ export default {
     return {
       size: "150px",
       windowSize: "",
-      dialog:false,
+      dialog: false,
       activeMenuItem: null,
       tagsAreUpdating: false,
       menuItems: [
@@ -216,7 +214,7 @@ export default {
       handler(tags) {
         this.userTags = tags;
       }
-    },
+    }
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.handleResize);
@@ -240,7 +238,6 @@ export default {
     },
     editProfileClick() {
       this.profileIsEdited = !this.profileIsEdited;
-
     },
     editTagsClick() {
       this.tagsAreUpdating = !this.tagsAreUpdating;
@@ -256,31 +253,26 @@ export default {
       });
     },
     addNewTag(tag) {
-      console.log(tag);
       this.userTags.push(tag.trim().toLowerCase());
     },
     handleDeleteChip(label, index) {
       this.userTags = this.userTags.filter((tag, i) => i !== index);
-      console.log("label", label);
-      console.log("index", index);
     },
     handleUpsertUserTags(newTags) {
-      console.log(newTags)
-
       const sortedTags = newTags.reduce(
         (sortedTags, tag) => {
-          typeof tag === 'string'
+          typeof tag === "string"
             ? sortedTags.new.push({ label: tag })
-            : sortedTags.existing.push(tag) ;
+            : sortedTags.existing.push(tag);
           return sortedTags;
         },
         { new: [], existing: [] }
       );
 
+      console.log(sortedTags)
+
       this.upsertUserTags(sortedTags);
       this.tagsAreUpdating = false;
-
-      console.log("sortedTags", sortedTags);
     }
   }
 };

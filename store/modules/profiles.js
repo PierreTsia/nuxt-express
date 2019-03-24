@@ -44,8 +44,11 @@ export default {
           `${PROFILE_END_POINT}/current`,
           setHeaderCookie()
         );
+
+        console.log("pq",profileQuery)
         try {
           const { profile, errors } = profileQuery.data;
+          console.log("fetch", profile)
           if (errors) {
             commit("setProfileError", errors);
             commit("setProfileLoading", false);
@@ -102,7 +105,7 @@ export default {
       axios
         .post(`${PROFILE_END_POINT}/tags/upsert`, tags, setHeaderCookie())
         .then(({ data }) => {
-          console.log(data);
+          console.log("upsertUserTags",data);
           const { tags } = data;
           commit("setProfileTags", tags);
           commit("setProfileLoading", false);

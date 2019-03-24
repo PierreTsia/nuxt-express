@@ -33,7 +33,6 @@ export default {
       return tabName === this.activeTabName;
     },
     handleDotClick(tabName){
-      console.log(tabName)
       this.$emit('onMenuItemChange', tabName)
     }
   }

@@ -1,7 +1,7 @@
 import Vuex from "vuex";
 import auth from "./modules/auth";
-import profiles from "./modules/profiles"
-import tags from "./modules/tags"
+import profiles from "./modules/profiles";
+import tags from "./modules/tags";
 
 import axios from "~/plugins/axios";
 
@@ -21,11 +21,13 @@ const createStore = () => {
             const config = {
               headers: { Authorization: `Bearer ${accessToken}` }
             };
-            const userQuery = await axios.get(`${USERS_END_POINT}/current`, config);
+            const userQuery = await axios.get(
+              `${USERS_END_POINT}/current`,
+              config
+            );
             const { user, profile } = userQuery.data;
             await commit("setUser", user);
-            await commit("setUserProfile", profile)
-
+            await commit("setUserProfile", profile);
           } catch (err) {
             // No valid cookie found
             console.log(err);
@@ -33,14 +35,13 @@ const createStore = () => {
         } else {
           commit("setUser", false);
           commit("setUserProfile", false);
-
         }
       }
     },
     modules: {
       auth,
       profiles,
-      tags,
+      tags
     }
   });
 };
