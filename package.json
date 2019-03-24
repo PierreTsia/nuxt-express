@@ -30,7 +30,7 @@
     "js-cookie": "^2.2.0",
     "moment": "^2.24.0",
     "mongoose": "^5.4.3",
-    "nuxt": "^2.0.0",
+    "nuxt": "^2.4.0",
     "nuxt-fontawesome": "^0.4.0",
     "nuxt-material-design-icons": "^1.0.4",
     "passport": "^0.4.0",

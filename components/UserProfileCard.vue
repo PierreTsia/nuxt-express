@@ -268,9 +268,6 @@ export default {
         },
         { new: [], existing: [] }
       );
-
-      console.log(sortedTags)
-
       this.upsertUserTags(sortedTags);
       this.tagsAreUpdating = false;
     }

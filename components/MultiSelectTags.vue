@@ -1,18 +1,18 @@
 <template>
   <div class="multiselect">
-
     <v-chip
       v-for="(tag, index) in userTags"
       :key="index"
-      :style="{backgroundColor: tag.color? tag.color : chipBackgroundColor}"
+      :style="{ backgroundColor: tag.color ? tag.color : chipBackgroundColor }"
       class="tag__chip white--text"
       close
-      @input="handleDeleteChip(tag, index)">
+      @input="handleDeleteChip(tag, index)"
+    >
       {{ tag._id ? tag.label : tag }}
     </v-chip>
-    <v-layout
-      row
-      align-center
+    <v-layout 
+      row 
+      align-center 
       wrap>
       <v-autocomplete
         v-model="newTags"
@@ -22,25 +22,22 @@
         :label="`Add an existing tag or create a new one`"
         class="multiselect__autocomplete"
         persistent-hint
-        item-text="label"/>
+        item-text="label"
+        @change="handleChange"
+      />
 
-      <v-btn
-        fab
-        dark
-        small
-        color="warning"
+      <v-btn 
+        fab 
+        dark 
+        small 
+        color="warning" 
         @click="handleAddNewTag">
         <v-icon>library_add</v-icon>
-
       </v-btn>
-
     </v-layout>
 
     <v-btn @click="$emit('submitNewTags', userTags)">Confirm</v-btn>
-
-
   </div>
-
 </template>
 
 <script>
@@ -92,13 +89,12 @@ export default {
     },
     handleAddNewTag() {
       if (this.inputValue && this.inputValue.trim().length > 1) {
-        this.nonPickedTags.some(
-          existingTag =>
-            existingTag.label === this.inputValue.trim().toLowerCase()
-              ? this.userTags.push(existingTag)
-              : this.userTags.push(this.inputValue.trim().toLowerCase())
-        );
+        this.userTags.push(this.inputValue.trim().toLowerCase());
       }
+    },
+    handleChange(tag) {
+      this.userTags.push(tag);
+      this.inputValue = "";
     }
   }
 };
@@ -110,7 +106,4 @@ export default {
   .multiselect__autocomplete
     max-width 80%
     margin-top 20px
-
-
-
 </style>

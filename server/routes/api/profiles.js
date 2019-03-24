@@ -5,6 +5,7 @@ const passport = require("passport");
 const myPassportService = require("../../passport")(passport);
 const router = express.Router();
 const cookieparser = require("cookieparser");
+const _ = require("lodash");
 /*
 //!* config
 const keys = require("./../../../config/keys");*/
@@ -134,17 +135,23 @@ router.post("/", (req, res, next) => {
           { user: user.id },
           { $set: profileFields },
           { new: true }
-        ).then(profile => res.json(profile));
+        )
+          .populate(["tags", "user"])
+          .then(profile => {
+            res.json({ success: true, profile });
+          });
       } else {
         //Create new Profile
         Profile.findOne({ handle: profileFields.handle }).then(profile => {
           if (profile) {
             errors.handle = "That handle already exists";
-            res.status(400).json(errors);
+            res.status(400).json({ errors });
           }
 
           // Save Profile
-          new Profile(profileFields).save().then(profile => res.json(profile));
+          new Profile(profileFields)
+            .save()
+            .then(profile => res.json({ profile }));
         });
       }
     }
@@ -172,10 +179,7 @@ router.post("/tags/upsert", (req, res, next) => {
           return res.status(404).json(errors);
         }
 
-        //sort tags
         const mergedTags = req.body;
-        console.log("mergedTafs",mergedTags)
-        //save new created tags
         const newSavedTags = [];
 
         if (mergedTags.new.length) {

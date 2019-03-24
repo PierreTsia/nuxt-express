@@ -45,10 +45,8 @@ export default {
           setHeaderCookie()
         );
 
-        console.log("pq",profileQuery)
         try {
           const { profile, errors } = profileQuery.data;
-          console.log("fetch", profile)
           if (errors) {
             commit("setProfileError", errors);
             commit("setProfileLoading", false);
@@ -63,32 +61,27 @@ export default {
     },
 
     async fetchAllProfiles({ commit }) {
-        commit('setAllProfilesLoading', true);
-        const profilesQuery = await axios.get(
-          `${PROFILE_END_POINT}/all`,
-          setHeaderCookie()
-        );
-        try {
-          const { profiles } = profilesQuery.data;
-          console.log(profiles);
-
-          commit("setProfiles", profiles);
-          commit('setAllProfilesLoading', false);
-
-        } catch (e) {
-          console.log(e);
-          commit('setAllProfilesLoading', false);
-        }
-
+      commit("setAllProfilesLoading", true);
+      const profilesQuery = await axios.get(
+        `${PROFILE_END_POINT}/all`,
+        setHeaderCookie()
+      );
+      try {
+        const { profiles } = profilesQuery.data;
+        commit("setProfiles", profiles);
+        commit("setAllProfilesLoading", false);
+      } catch (e) {
+        console.log(e);
+        commit("setAllProfilesLoading", false);
+      }
     },
 
     updateProfile({ commit }, newProfile) {
       commit("setProfileLoading", true);
       axios
         .post(`${PROFILE_END_POINT}`, newProfile, setHeaderCookie())
-        .then(data => {
-          console.log(data);
-          const profile = data;
+        .then(({ data }) => {
+          const { profile } = data;
           commit("setProfileLoading", false);
           commit("setUserProfile", profile);
           commit("setProfileError", null);
@@ -105,7 +98,6 @@ export default {
       axios
         .post(`${PROFILE_END_POINT}/tags/upsert`, tags, setHeaderCookie())
         .then(({ data }) => {
-          console.log("upsertUserTags",data);
           const { tags } = data;
           commit("setProfileTags", tags);
           commit("setProfileLoading", false);
