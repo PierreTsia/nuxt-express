@@ -21,6 +21,15 @@ const profilesEqualityCheck = require("../../helpers/profileEquality");
 const randomColor = require("../../helpers/randomColor");
 const sanitizeTag = require("../../helpers/sanitizeTag");
 
+const formidable = require("formidable");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: "dd9kfvzbg",
+  api_key: "584779789454681",
+  api_secret: "nA2Iv4ad1zMBpg1gIymSGhYfJvw"
+});
+
 //**ROUTES
 
 // ? @route GET to api/profiles/test
@@ -71,6 +80,15 @@ router.get("/current", (req, res, next) => {
       return res.json({ user: false });
     } else {
       const userId = user.id;
+
+      console.log(cloudinary);
+
+      cloudinary.uploader.upload(
+        "/home/pierre_t/git/nuxt-express/static/v.png",
+        function(error, result) {
+          console.log(result, error);
+        }
+      );
 
       Profile.findOne({ user: userId })
         .populate("tags")
@@ -156,6 +174,65 @@ router.post("/", (req, res, next) => {
       }
     }
   })(req, res, next);
+});
+
+// ? @route POST to api/profiles/avatar
+// ? @description Update User Avatar
+// ! @ access Restricted
+
+router.post("/avatar", (req, res, next) => {
+  console.log(req.headers);
+  let avatarUrl;
+
+  passport.authenticate("jwt", async (err, user, info) => {
+    if (!user) {
+      return res.json({ user: false });
+      console.log("not found");
+    } else {
+      const userId = user.id;
+      console.log(user);
+      try {
+        //res.json(userProfile)
+
+        new formidable.IncomingForm().parse(req, (err, fields, files) => {
+          if (err) {
+            console.error("Error", err);
+            throw err;
+          }
+          console.log("Fields", fields);
+          console.log("Files", files.file);
+
+          cloudinary.uploader.upload(files.file.path, async function(
+            error,
+            result
+          ) {
+            console.log(result, error);
+            avatarUrl = result.secure_url;
+            console.log("avatarUrl", avatarUrl);
+            User.findOneAndUpdate({ _id: userId }, { avatar: avatarUrl }).then(
+              profile => res.json(profile)
+            );
+          });
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  })(req, res, next);
+
+  /*  new formidable.IncomingForm().parse(req, (err, fields, files) => {
+    if (err) {
+      console.error("Error", err);
+      throw err;
+    }
+    console.log("Fields", fields);
+    console.log("Files", files.file);
+
+    cloudinary.uploader.upload(files.file.path, function(error, result) {
+      console.log(result, error);
+      avatarUrl = result.secure_url;
+    });
+  })*/
 });
 
 // ? @route POST to api/profiles/current

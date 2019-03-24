@@ -16,21 +16,19 @@ const app = express();
 //BodyParser Middleware
 app.use(
   bodyParser.urlencoded({
-    extended: false
+    extended: true,
+    limit: "10mb"
   })
 );
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "10mb", extended: true }));
 
 //DB & Mongoose
 
 const db = require("../config/keys").mongoURI;
 
 mongoose
-  .connect(
-    db,
-    { useNewUrlParser: true }
-  )
+  .connect(db, { useNewUrlParser: true })
   .then(() => console.log(" 💾 Database connected"))
   .catch(error => console.log(error));
 

@@ -9,7 +9,8 @@ const setHeaderCookie = () => {
     const { accessToken } = cookie;
     return {
       headers: {
-        Authorization: `Bearer ${accessToken}`
+        Authorization: `Bearer ${accessToken}`,
+
       }
     };
   }
@@ -91,6 +92,15 @@ export default {
           const error = err.response.data;
           commit("setProfileError", error);
         });
+    },
+
+    updateAvatar({ commit },  data ) {
+      const auth = Cookie.get("auth");
+      const cookie = JSON.parse(auth);
+      const { accessToken } = cookie;
+      axios
+        .post(`${PROFILE_END_POINT}/avatar`, data, setHeaderCookie())
+        .then(data => console.log(data));
     },
 
     upsertUserTags({ commit }, tags) {

@@ -1,56 +1,68 @@
 <template>
-  <v-card
-    color="white"
-    class="profileUserCard"
+  <v-card 
+    color="white" 
+    class="profileUserCard" 
     elevation="2">
     <div class="profileUserCard_avatar">
       <h1 class="v-card__title white--text">{{ me.name }}</h1>
 
-      <h2
-        v-if="userHasProfile"
-        class="grey--text mb-4 subheading">{{ userProfile.status }}</h2>
-      <h2
-        v-else
-        class="grey--text mb-4 subheading">Add a status to your profile</h2>
+      <h2 
+        v-if="userHasProfile" 
+        class="grey--text mb-4 subheading">
+        {{ userProfile.status }}
+      </h2>
+      <h2 
+        v-else 
+        class="grey--text mb-4 subheading">
+        Add a status to your profile
+      </h2>
 
       <EditProfileModal
         :is-shown="profileIsEdited"
         @onCancelClick="profileIsEdited = !profileIsEdited"
-        @onConfirmClick="handleProfileEditClick"/>
+        @onConfirmClick="handleProfileEditClick"
+      />
 
-      <v-avatar
-        :size="avatarSize"
+      <EditAvatarModal
+        :is-shown="avatarIsEdited"
+        @onCancelClick="avatarIsEdited = !avatarIsEdited"
+        @onConfirmClick="handleAvatarEditClick"
+      />
+
+      <v-avatar 
+        :size="avatarSize" 
         class="userAvatar">
-        <img
-          :src="me.avatar"
-          alt="avatar">
+        <img 
+          :src="me.avatar" 
+          alt="avatar" >
       </v-avatar>
 
       <h2 
-        v-if="userHasProfile"
+        v-if="userHasProfile" 
         class="white--text mt-4 subheading">
-        {{ userProfile.location }}</h2>
-
+        {{ userProfile.location }}
+      </h2>
     </div>
 
     <div class="profileUserCard_content">
-      <v-layout
-        fill-height
-        column
-        justify-end
+      <v-layout 
+        fill-height 
+        column 
+        justify-end 
         fluid>
         <v-menu
           :close-on-content-click="false"
           :nudge-width="200"
           transition="slide-y-transition"
           offset-y
-          class="pop-over-menu">
-          <v-btn
-            slot="activator"
-            class="accent--text"
-            bottom
-            offset-y
-            icon >
+          class="pop-over-menu"
+        >
+          <v-btn 
+            slot="activator" 
+            class="accent--text" 
+            bottom 
+            offset-y 
+            icon>
             <v-icon>more_vert</v-icon>
           </v-btn>
           <v-list>
@@ -59,7 +71,8 @@
               :key="index"
               class="menu__item"
               active-class="red"
-              @click="item.handler">
+              @click="item.handler"
+            >
               <v-icon class="mr-2">{{ item.icon }}</v-icon>
               <v-list-tile-title>
                 {{ item.title }}
@@ -68,68 +81,79 @@
           </v-list>
         </v-menu>
 
-        <v-card-title
-          class="card_title"
+        <v-card-title 
+          class="card_title" 
           primary-title>
           <div>
             <div class="headline">User Name</div>
-            <span
-              v-if="userHasProfile"
-              class="grey--text">{{ userProfile.handle }}</span>
-            <span
-              v-else
-              class="grey--text">Complete your profile to register unique user name</span>
+            <span 
+              v-if="userHasProfile" 
+              class="grey--text">{{
+                userProfile.handle
+              }}</span>
+            <span 
+              v-else 
+              class="grey--text"
+            >Complete your profile to register unique user name</span
+            >
           </div>
         </v-card-title>
 
-        <v-card-title
-          class="card_title"
+        <v-card-title 
+          class="card_title" 
           primary-title>
           <div>
             <div class="headline">Bio</div>
             <span 
               v-if="userHasProfile" 
-              class="grey--text">{{ userProfile.bio }}</span>
+              class="grey--text">{{
+                userProfile.bio
+              }}</span>
             <span 
               v-else 
-              class="grey--text">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</span>
+              class="grey--text"
+            >It is a long established fact that a reader will be distracted
+            by.</span
+            >
           </div>
         </v-card-title>
 
-        <v-card-title
-          class="card_title user__tags"
+        <v-card-title 
+          class="card_title user__tags" 
           primary-title>
           <div>
             <div class="headline">Favorite Tags</div>
-            <span class="grey--text">Subscribe to existing tags or create new ones...</span>
+            <span 
+              class="grey--text"
+            >Subscribe to existing tags or create new ones...</span
+            >
 
             <template v-if="!tagsAreUpdating && userTags.length">
               <v-chip
                 v-for="(tag, index) in userTags"
                 :key="index"
-                :style="{backgroundColor: tag.color? tag.color : chipBackgroundColor}"
-                class="tag__chip white--text">{{ tag._id ? tag.label : tag }}
+                :style="{
+                  backgroundColor: tag.color ? tag.color : chipBackgroundColor
+                }"
+                class="tag__chip white--text"
+              >{{ tag._id ? tag.label : tag }}
               </v-chip>
             </template>
-
           </div>
         </v-card-title>
         <template v-if="tagsAreUpdating && userHasProfile">
-          <MultiSelectTags 
-            :tags="allTags" 
-            @submitNewTags="handleUpsertUserTags"/>
-
-
+          <MultiSelectTags
+            :tags="allTags"
+            @submitNewTags="handleUpsertUserTags"
+          />
         </template>
-
-
       </v-layout>
     </div>
     <div class="profileUserCard_bottom_bar">
       <div class="text-xs-center">
         <v-btn 
           round 
-          color="accent"
+          color="accent" 
           dark>Rounded Button</v-btn>
       </div>
     </div>
@@ -137,8 +161,11 @@
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
+import FormData from 'form-data'
 import PopOverMenu from "./PopOverMenu";
 import EditProfileModal from "@/components/EditProfileModal.vue";
+import EditAvatarModal from "@/components/EditAvatarModal.vue";
+
 import moment from "moment";
 import MultiSelectTags from "@/components/MultiSelectTags.vue";
 
@@ -147,6 +174,7 @@ export default {
   components: {
     PopOverMenu,
     EditProfileModal,
+    EditAvatarModal,
     MultiSelectTags
   },
 
@@ -165,13 +193,19 @@ export default {
           handler: this.editProfileClick
         },
         {
+          title: "Edit Avatar",
+          icon: "photo",
+          handler: this.editAvatarClick
+        },
+        {
           title: "Edit Tags",
           icon: "collections_bookmark",
           handler: this.editTagsClick
         }
       ],
       profileIsEdited: false,
-      userTags: []
+      userTags: [],
+      avatarIsEdited: false
     };
   },
   computed: {
@@ -226,7 +260,7 @@ export default {
     this.fetchAllTags();
   },
   methods: {
-    ...mapActions(["updateProfile", "upsertUserTags", "fetchAllTags"]),
+    ...mapActions(["updateProfile", "upsertUserTags", "fetchAllTags", "updateAvatar"]),
     handleResize() {
       this.windowSize = document.documentElement.clientWidth;
     },
@@ -250,7 +284,25 @@ export default {
         if (!this.profileHasErrors) {
           this.profileIsEdited = true;
         }
+        this.profileIsEdited = false;
       });
+    },
+
+    handleAvatarEditClick(avatar){
+      console.log(avatar)
+      console.log(FormData)
+      let data = new FormData()
+      for (var p of data) {
+        console.log(p);
+      }
+      console.log(data)
+      data.append('file', avatar)
+      console.log(data)
+
+
+
+
+      this.updateAvatar(data)
     },
     addNewTag(tag) {
       this.userTags.push(tag.trim().toLowerCase());
@@ -270,6 +322,11 @@ export default {
       );
       this.upsertUserTags(sortedTags);
       this.tagsAreUpdating = false;
+    },
+
+    editAvatarClick() {
+      console.log("pouet");
+      this.avatarIsEdited = !this.avatarIsEdited;
     }
   }
 };
@@ -326,9 +383,4 @@ export default {
     "a a a c c c "\
     "a a a c c c "\
     "a a a bb bb bb"\
-
-
-
-
-
 </style>
