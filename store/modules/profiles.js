@@ -9,8 +9,7 @@ const setHeaderCookie = () => {
     const { accessToken } = cookie;
     return {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
-
+        Authorization: `Bearer ${accessToken}`
       }
     };
   }
@@ -22,7 +21,8 @@ export default {
     errors: null,
     profileLoading: false,
     allProfilesLoading: false,
-    allUsersProfiles: null
+    allUsersProfiles: null,
+
   },
 
   getters: {
@@ -34,7 +34,7 @@ export default {
       state.currentUserProfile ? state.currentUserProfile.tags : [],
     profileIsLoading: state => state.profileLoading,
     allProfilesLoading: state => state.allProfilesLoading,
-    allProfiles: state => state.allUsersProfiles
+    allProfiles: state => state.allUsersProfiles,
   },
 
   actions: {
@@ -94,14 +94,7 @@ export default {
         });
     },
 
-    updateAvatar({ commit },  data ) {
-      const auth = Cookie.get("auth");
-      const cookie = JSON.parse(auth);
-      const { accessToken } = cookie;
-      axios
-        .post(`${PROFILE_END_POINT}/avatar`, data, setHeaderCookie())
-        .then(data => console.log(data));
-    },
+
 
     upsertUserTags({ commit }, tags) {
       commit("setProfileLoading", true);
@@ -138,6 +131,6 @@ export default {
 
     setProfileTags(state, tags) {
       state.currentUserProfile.tags = tags;
-    }
+    },
   }
 };

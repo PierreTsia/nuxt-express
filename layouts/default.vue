@@ -66,7 +66,7 @@
       app
     >
       <span>&copy; 2017</span>
-    </v-footer>
+    </v-footer>x
   </v-app>
 </template>
 

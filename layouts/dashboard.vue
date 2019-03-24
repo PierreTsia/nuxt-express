@@ -17,7 +17,7 @@
           <v-list-tile
             avatar>
             <v-list-tile-avatar>
-              <img :src="`//${me.avatar}`">
+              <img :src="me.avatar">
             </v-list-tile-avatar>
 
             <v-list-tile-content>

@@ -23,11 +23,13 @@ const sanitizeTag = require("../../helpers/sanitizeTag");
 
 const formidable = require("formidable");
 const cloudinary = require("cloudinary").v2;
+require('dotenv').config()
+
 
 cloudinary.config({
-  cloud_name: "dd9kfvzbg",
-  api_key: "584779789454681",
-  api_secret: "nA2Iv4ad1zMBpg1gIymSGhYfJvw"
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
 
 //**ROUTES
@@ -210,7 +212,7 @@ router.post("/avatar", (req, res, next) => {
             avatarUrl = result.secure_url;
             console.log("avatarUrl", avatarUrl);
             User.findOneAndUpdate({ _id: userId }, { avatar: avatarUrl }).then(
-              profile => res.json(profile)
+              user => res.json({ avatar: avatarUrl })
             );
           });
         });
@@ -220,19 +222,6 @@ router.post("/avatar", (req, res, next) => {
     }
   })(req, res, next);
 
-  /*  new formidable.IncomingForm().parse(req, (err, fields, files) => {
-    if (err) {
-      console.error("Error", err);
-      throw err;
-    }
-    console.log("Fields", fields);
-    console.log("Files", files.file);
-
-    cloudinary.uploader.upload(files.file.path, function(error, result) {
-      console.log(result, error);
-      avatarUrl = result.secure_url;
-    });
-  })*/
 });
 
 // ? @route POST to api/profiles/current
