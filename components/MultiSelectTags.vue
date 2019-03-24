@@ -22,8 +22,7 @@
         :label="`Add an existing tag or create a new one`"
         class="multiselect__autocomplete"
         persistent-hint
-        item-text="label"
-        @change="handleTextChange"/>
+        item-text="label"/>
 
       <v-btn
         fab
@@ -32,10 +31,7 @@
         color="warning"
         @click="handleAddNewTag">
         <v-icon>library_add</v-icon>
-        <vue-material-icon
-          :size="32"
-          :color="red"
-          name="favorite"/>
+
       </v-btn>
 
     </v-layout>
@@ -87,22 +83,23 @@ export default {
     if (this.userProfileTags.length) {
       this.userTags = this.userProfileTags;
     }
-
-    console.log(this.$refs);
   },
   methods: {
-
     handleDeleteChip(tag, index) {
       this.userTags = this.userTags.filter(
         (tag, tagIndex) => tagIndex !== index
       );
     },
     handleAddNewTag() {
-      if(this.inputValue && this.inputValue.trim().length > 1){
-        this.userTags.push(this.inputValue.trim().toLowerCase())
+      if (this.inputValue && this.inputValue.trim().length > 1) {
+        this.nonPickedTags.some(
+          existingTag =>
+            existingTag.label === this.inputValue.trim().toLowerCase()
+              ? this.userTags.push(existingTag)
+              : this.userTags.push(this.inputValue.trim().toLowerCase())
+        );
       }
-    },
-
+    }
   }
 };
 </script>
