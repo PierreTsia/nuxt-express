@@ -294,15 +294,8 @@ export default {
     },
 
     handleAvatarEditClick(avatar) {
-      console.log(avatar);
-      console.log(FormData);
       let data = new FormData();
-      for (var p of data) {
-        console.log(p);
-      }
-      console.log(data);
       data.append("file", avatar);
-      console.log(data);
 
       this.updateAvatar(data);
     },
@@ -327,7 +320,6 @@ export default {
     },
 
     editAvatarClick() {
-      console.log("pouet");
       this.avatarIsEdited = !this.avatarIsEdited;
     }
   }

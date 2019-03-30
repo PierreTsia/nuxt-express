@@ -14,7 +14,6 @@ export default {
       axios
         .get(`${END_POINT}/all`)
         .then(({ data }) => {
-          console.log(data)
           const tags  = data;
           commit("setAllTags", tags);
         })

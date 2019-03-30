@@ -82,15 +82,6 @@ router.get("/current", (req, res, next) => {
     } else {
       const userId = user.id;
 
-      console.log(cloudinary);
-
-      cloudinary.uploader.upload(
-        "/home/pierre_t/git/nuxt-express/static/v.png",
-        function(error, result) {
-          console.log(result, error);
-        }
-      );
-
       Profile.findOne({ user: userId })
         .populate("tags")
         .then(profile => {
@@ -182,13 +173,11 @@ router.post("/", (req, res, next) => {
 // ! @ access Restricted
 
 router.post("/avatar", (req, res, next) => {
-  console.log(req.headers);
   let avatarUrl;
 
   passport.authenticate("jwt", async (err, user, info) => {
     if (!user) {
       return res.json({ user: false });
-      console.log("not found");
     } else {
       const userId = user.id;
       console.log(user);
@@ -200,8 +189,6 @@ router.post("/avatar", (req, res, next) => {
             console.error("Error", err);
             throw err;
           }
-          console.log("Fields", fields);
-          console.log("Files", files.file);
 
           cloudinary.uploader.upload(files.file.path, async function(
             error,
@@ -209,7 +196,6 @@ router.post("/avatar", (req, res, next) => {
           ) {
             console.log(result, error);
             avatarUrl = result.secure_url;
-            console.log("avatarUrl", avatarUrl);
             User.findOneAndUpdate({ _id: userId }, { avatar: avatarUrl }).then(
               user => res.json({ avatar: avatarUrl })
             );
