@@ -4,8 +4,8 @@ module.exports = {
   mode: "universal",
 
   /*
-  ** Headers of the page
-  */
+   ** Headers of the page
+   */
   head: {
     title: pkg.name,
     meta: [
@@ -24,36 +24,35 @@ module.exports = {
   },
 
   /*
-  ** Customize the progress-bar color
-  */
+   ** Customize the progress-bar color
+   */
   loading: { color: "#fff" },
 
   /*
-  ** Global CSS
-  */
+   ** Global CSS
+   */
   css: [
     "~/assets/style/app.styl",
-    "node_modules/vue-multiselect/dist/vue-multiselect.min.css",
+    "node_modules/vue-multiselect/dist/vue-multiselect.min.css"
   ],
 
   /*
-  ** Plugins to load before mounting the App
-  */
+   ** Plugins to load before mounting the App
+   */
   plugins: ["@/plugins/vuetify", "@/plugins/vue-multiselect"],
 
   /*
-  ** Nuxt.js modules
-  */
+   ** Nuxt.js modules
+   */
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
     "@nuxtjs/axios",
-    "nuxt-material-design-icons",
     ["@nuxtjs/moment", { locales: ["fr"], defaultLocale: "fr" }]
   ],
 
   /*
-  ** Axios module configuration
-  */
+   ** Axios module configuration
+   */
   axios: {
     baseURL: `http://${process.env.HOST || "localhost"}:${process.env.PORT ||
       3000}`
@@ -62,12 +61,12 @@ module.exports = {
 
   router: {},
   /*
-  ** Build configuration
-  */
+   ** Build configuration
+   */
   build: {
     /*
-    ** You can extend webpack config here
-    */
+     ** You can extend webpack config here
+     */
     extend(config, ctx) {
       // Run ESLint on save
       if (ctx.isDev && ctx.isClient) {

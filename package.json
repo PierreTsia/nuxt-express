@@ -32,7 +32,6 @@
     "mongoose": "^5.4.3",
     "nuxt": "^2.0.0",
     "nuxt-fontawesome": "^0.4.0",
-    "nuxt-material-design-icons": "^1.0.4",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "validator": "^10.11.0",
