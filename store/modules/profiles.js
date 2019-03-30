@@ -21,7 +21,8 @@ export default {
     errors: null,
     profileLoading: false,
     allProfilesLoading: false,
-    allUsersProfiles: null
+    allUsersProfiles: null,
+
   },
 
   getters: {
@@ -33,7 +34,7 @@ export default {
       state.currentUserProfile ? state.currentUserProfile.tags : [],
     profileIsLoading: state => state.profileLoading,
     allProfilesLoading: state => state.allProfilesLoading,
-    allProfiles: state => state.allUsersProfiles
+    allProfiles: state => state.allUsersProfiles,
   },
 
   actions: {
@@ -47,7 +48,7 @@ export default {
 
         try {
           const { profile, errors } = profileQuery.data;
-         if (errors) {
+          if (errors) {
             commit("setProfileError", errors);
             commit("setProfileLoading", false);
           } else {
@@ -93,6 +94,8 @@ export default {
         });
     },
 
+
+
     upsertUserTags({ commit }, tags) {
       commit("setProfileLoading", true);
       axios
@@ -128,6 +131,6 @@ export default {
 
     setProfileTags(state, tags) {
       state.currentUserProfile.tags = tags;
-    }
+    },
   }
 };

@@ -1,13 +1,28 @@
 import axios from "~/plugins/axios";
 const Cookie = process.client ? require("js-cookie") : undefined;
 const END_POINT = "api/users";
+const PROFILE_END_POINT = "api/profiles";
+
+const setHeaderCookie = () => {
+  if (process.client) {
+    const auth = Cookie.get("auth");
+    const cookie = JSON.parse(auth);
+    const { accessToken } = cookie;
+    return {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+  }
+};
 
 export default {
   state: {
     user: null,
     loginErrors: {},
     registerErrors: {},
-    isLoading: false
+    isLoading: false,
+    avatarLoading: false
   },
   getters: {
     isAuth: state => !!state.user,
@@ -15,6 +30,7 @@ export default {
     loginErrors: state => state.loginErrors,
     isLoading: state => state.isLoading,
     registerErrors: state => state.registerErrors,
+    avatarIsLoading: state => state.avatarLoading
   },
   actions: {
     login({ commit }, payload) {
@@ -41,7 +57,7 @@ export default {
         .then(({ data }) => {
           Cookie.remove("auth");
           commit("setUser", false);
-          commit('setUserProfile', false)
+          commit("setUserProfile", false);
           commit("setLoading", false);
         })
         .catch(e => {
@@ -66,6 +82,22 @@ export default {
           commit("setRegisterError", err);
           commit("setLoading", false);
         });
+    },
+
+    updateAvatar({ commit }, data) {
+      commit("setAvatarLoading", true);
+      axios
+        .post(`${PROFILE_END_POINT}/avatar`, data, setHeaderCookie())
+        .then(({ data }) => {
+          console.log(data);
+          const { avatar } = data;
+          commit("setUserAvatar", avatar);
+          commit("setAvatarLoading", false);
+        })
+        .catch(e => {
+          console.log(e);
+          commit("setAvatarLoading", false);
+        });
     }
   },
   mutations: {
@@ -80,6 +112,12 @@ export default {
     },
     setLoading(state, isLoading) {
       state.isLoading = isLoading;
+    },
+    setAvatarLoading(state, value) {
+      state.avatarLoading = value;
+    },
+    setUserAvatar(state, avatar) {
+      state.user.avatar = avatar;
     }
   }
 };

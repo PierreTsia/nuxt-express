@@ -1,23 +1,20 @@
 <template>
-  <v-app
-    class="grey lighten-4"
-  >
+  <v-app class="grey lighten-4">
     <v-navigation-drawer
       :clipped="clipped"
       v-model="drawer"
       class="accent nav_drawer"
       dark
       fixed
-      app>
+      app
+    >
       <v-toolbar
         flat
         class="transparent">
-        <v-list
-          class="pa-0 ml-auto">
-          <v-list-tile
-            avatar>
+        <v-list class="pa-0 ml-auto">
+          <v-list-tile avatar>
             <v-list-tile-avatar>
-              <img :src="`//${me.avatar}`">
+              <img :src="me.avatar" >
             </v-list-tile-avatar>
 
             <v-list-tile-content>
@@ -27,7 +24,7 @@
         </v-list>
       </v-toolbar>
 
-      <v-divider/>
+      <v-divider />
       <v-flex class="dashboard__nav">
         <v-list>
           <v-list-tile
@@ -46,16 +43,15 @@
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
-        <v-divider/>
+        <v-divider />
 
         <v-list class="logout__button">
           <v-list-tile
             key="logout"
             class="white--text"
-            @click= "handleLogout"
-          >
+            @click="handleLogout">
             <v-list-tile-action>
-              <v-icon >exit_to_app</v-icon>
+              <v-icon>exit_to_app</v-icon>
             </v-list-tile-action>
 
             <v-list-tile-content>
@@ -63,13 +59,7 @@
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
-
       </v-flex>
-
-
-
-
-
     </v-navigation-drawer>
     <v-toolbar
       ref="toolbar"
@@ -77,20 +67,19 @@
       class="grey lighten-4"
       app
       flat
-      fixed>
+      fixed
+    >
       <v-toolbar-side-icon @click="drawer = !drawer" />
 
       <v-toolbar-title
         class="text--secondary"
-        v-text="activePageName"/>
+        v-text="activePageName" />
     </v-toolbar>
     <v-content>
-      <v-container
-        class="grey lighten-4">
+      <v-container class="grey lighten-4">
         <nuxt />
       </v-container>
     </v-content>
-
   </v-app>
 </template>
 
@@ -156,8 +145,7 @@ export default {
     },
     handleRouteChange(route) {
       this.$router.push(route);
-    },
-
+    }
   }
 };
 </script>
@@ -165,5 +153,4 @@ export default {
 .v-list__tile--active
   color white !important
   background-color #610061
-
 </style>
