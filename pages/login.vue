@@ -1,13 +1,13 @@
 <template>
-  <v-layout
-    class="login">
+  <v-layout class="login">
     <v-progress-circular
       v-if="isLoading"
       :size="90"
       :width="7"
       class="login__loader"
       color="secondary"
-      indeterminate/>
+      indeterminate
+    />
     <div
       v-if="!isLoading"
       class="login__tabs__container">
@@ -16,8 +16,9 @@
         centered
         color="transparent"
         icons-and-text
-        light>
-        <v-tabs-slider color="secondary"/>
+        light
+      >
+        <v-tabs-slider color="secondary" />
         <v-tab
           key="login"
           class="tab"
@@ -35,22 +36,21 @@
           <span class="primary--text">Sign-up</span>
           <v-icon>person_add</v-icon>
         </v-tab>
-        <v-tab-item
-          value="login">
+        <v-tab-item value="login">
           <LoginForm
             v-if="!isLoading"
             :errors="loginErrors"
             class="loginForm"
-            @userLogin="handleLoginRequest" />
+            @userLogin="handleLoginRequest"
+          />
         </v-tab-item>
-        <v-tab-item
-          value="register">
-
+        <v-tab-item value="register">
           <RegisterForm
             v-if="!isLoading"
             :errors="registerErrors"
             class="loginForm"
-            @userRegister="handleRegisterRequest"/>
+            @userRegister="handleRegisterRequest"
+          />
         </v-tab-item>
       </v-tabs>
     </div>
@@ -94,34 +94,26 @@ export default {
   },
   methods: {
     ...mapActions(["login", "registerNewUser"]),
-    handleLoginRequest(user) {
-      this.login(user);
+    async handleLoginRequest(user) {
+      await this.login(user);
     },
     handleRegisterRequest(newUser) {
-      this.registerNewUser(newUser)
+      this.registerNewUser(newUser);
     }
   }
 };
 </script>
 
-
 <style lang="stylus">
-  .login
-    display flex
-    flex-direction column
-    justify-content center
-    .loginForm
-        max-width 600px
-        margin auto
-    .login__loader
+.login
+  display flex
+  flex-direction column
+  justify-content center
+  .loginForm
+      max-width 600px
       margin auto
-    .tab
-      display flex
-
-
-
-
-
-
-
+  .login__loader
+    margin auto
+  .tab
+    display flex
 </style>

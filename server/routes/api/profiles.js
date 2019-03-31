@@ -23,13 +23,12 @@ const sanitizeTag = require("../../helpers/sanitizeTag");
 
 const formidable = require("formidable");
 const cloudinary = require("cloudinary").v2;
-require('dotenv').config()
-
+require("dotenv").config();
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
+  api_secret: process.env.API_SECRET
 });
 
 //**ROUTES
@@ -82,15 +81,6 @@ router.get("/current", (req, res, next) => {
       return res.json({ user: false });
     } else {
       const userId = user.id;
-
-      console.log(cloudinary);
-
-      cloudinary.uploader.upload(
-        "/home/pierre_t/git/nuxt-express/static/v.png",
-        function(error, result) {
-          console.log(result, error);
-        }
-      );
 
       Profile.findOne({ user: userId })
         .populate("tags")
@@ -183,16 +173,13 @@ router.post("/", (req, res, next) => {
 // ! @ access Restricted
 
 router.post("/avatar", (req, res, next) => {
-  console.log(req.headers);
   let avatarUrl;
 
   passport.authenticate("jwt", async (err, user, info) => {
     if (!user) {
       return res.json({ user: false });
-      console.log("not found");
     } else {
       const userId = user.id;
-      console.log(user);
       try {
         //res.json(userProfile)
 
@@ -201,27 +188,43 @@ router.post("/avatar", (req, res, next) => {
             console.error("Error", err);
             throw err;
           }
-          console.log("Fields", fields);
-          console.log("Files", files.file);
 
-          cloudinary.uploader.upload(files.file.path, async function(
-            error,
-            result
-          ) {
-            console.log(result, error);
-            avatarUrl = result.secure_url;
-            console.log("avatarUrl", avatarUrl);
-            User.findOneAndUpdate({ _id: userId }, { avatar: avatarUrl }).then(
-              user => res.json({ avatar: avatarUrl })
-            );
-          });
+          cloudinary.uploader.upload(
+            files.file.path,
+
+            {
+              folder: `${userId}/avatar/`,
+              public_id: `${user.name}`,
+              overwrite: true,
+              transformation: [
+                {
+                  width: 400,
+                  height: 400,
+                  gravity: "face",
+                  radius: "max",
+                  crop: "crop"
+                },
+                { width: 200, crop: "scale" }
+              ]
+            },
+            async (error, result) => {
+              if (error) {
+                res.json({ error });
+              } else {
+                avatarUrl = result.secure_url;
+                User.findOneAndUpdate(
+                  { _id: userId },
+                  { avatar: avatarUrl }
+                ).then(user => res.json({ avatar: avatarUrl }));
+              }
+            }
+          );
         });
       } catch (e) {
         console.log(e);
       }
     }
   })(req, res, next);
-
 });
 
 // ? @route POST to api/profiles/current

@@ -89,10 +89,10 @@ export default {
       axios
         .post(`${PROFILE_END_POINT}/avatar`, data, setHeaderCookie())
         .then(({ data }) => {
-          console.log(data);
           const { avatar } = data;
           commit("setUserAvatar", avatar);
           commit("setAvatarLoading", false);
+          return avatar
         })
         .catch(e => {
           console.log(e);

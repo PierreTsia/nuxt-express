@@ -10,9 +10,9 @@
     >
       {{ tag._id ? tag.label : tag }}
     </v-chip>
-    <v-layout 
-      row 
-      align-center 
+    <v-layout
+      row
+      align-center
       wrap>
       <v-autocomplete
         v-model="newTags"
@@ -26,11 +26,11 @@
         @change="handleChange"
       />
 
-      <v-btn 
-        fab 
-        dark 
-        small 
-        color="warning" 
+      <v-btn
+        fab
+        dark
+        small
+        color="warning"
         @click="handleAddNewTag">
         <v-icon>library_add</v-icon>
       </v-btn>

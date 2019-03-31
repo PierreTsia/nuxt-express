@@ -1,42 +1,62 @@
 <template>
-  <v-dialog 
-    v-model="dialog" 
-    persistent 
+  <v-dialog
+    v-model="dialog"
+    persistent
     max-width="600px">
     <v-card>
       <v-card-title>
         <span class="headline">Update an image file</span>
       </v-card-title>
       <v-card-text>
-        <v-container grid-list-md>
-          <v-layout wrap>
-            <v-flex xs12>
-              <v-btn @click="handleUploadClick">
-                upload
+        <v-layout wrap>
+          <div
+            v-if="!isLoading"
+            class="editAvatar__preview">
+            <div>
+              <v-btn
+                color="primary"
+                fab
+                small
+                dark
+                @click="handleUploadClick">
+                <v-icon>backup</v-icon>
               </v-btn>
-              <input
-                ref="upload"
-                :style="{ display: 'none' }"
-                type="file"
-                @change="uploadNewUserImage"
-              >
+            </div>
+            <input
+              ref="upload"
+              :style="{ display: 'none' }"
+              type="file"
+              @change="uploadNewUserImage"
+            >
 
-              <v-avatar 
-                v-if="tempUrl" 
-                class="userAvatar">
-                <img 
-                  :src="tempUrl" 
-                  alt="avatar" >
-              </v-avatar>
-            </v-flex>
-          </v-layout>
-        </v-container>
+            <v-avatar
+              v-if="tempUrl"
+              class="userAvatar">
+              <img
+                :src="tempUrl"
+                alt="avatar" >
+            </v-avatar>
+          </div>
+          <v-flex
+            v-else
+            xs12>
+            <div class="loader">
+              <v-progress-circular
+                :size="70"
+                :width="7"
+                color="purple"
+                indeterminate
+              />
+            </div>
+          </v-flex>
+        </v-layout>
       </v-card-text>
-      <v-card-actions>
-        <v-layout 
-          row 
-          wrap 
-          xs12 
+      <v-card-actions
+        v-if="tempUrl.length">
+        <v-layout
+          row
+          wrap
+          xs12
           justify-center>
           <v-btn
             color="white"
@@ -71,6 +91,10 @@ export default {
   },
   props: {
     isShown: {
+      type: Boolean,
+      default: false
+    },
+    isLoading: {
       type: Boolean,
       default: false
     }
@@ -124,5 +148,14 @@ export default {
   }
 };
 </script>
+<style lang="stylus">
+.loader
+  display flex
+  justify-content center
+  align-items center
 
-<style scoped></style>
+.editAvatar__preview
+  width 100%
+  display flex
+  justify-content center
+</style>
